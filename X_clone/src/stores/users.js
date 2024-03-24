@@ -1,41 +1,37 @@
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useUsersStore = defineStore('users', () => {
   
-    const theUsers = ref([
-        {
-            "name": "BMW X3 SUV",
-            "year": 2023,
-            "price": 45000
-            
-        },
-        {
-            "name": "BMW X5 SUV",
-            "year": 2022,
-            "price": 60000
-        },
-        {
-            "name": "BMW X7 SUV",
-            "year": 2024,
-            "price": 75000
-        },
-        {
-            "name": "BMW 3 Series Sedan",
-            "year": 2022,
-            "price": 41000
-        },
-        {
-            "name": "BMW 5 Series Sedan",
-            "year": 2023,
-            "price": 54000
-        },
-        {
-            "name": "BMW 7 Series Sedan",
-            "year": 2024,
-            "price": 86000
-        }
-    ])
+    // const users = ref([
+    //     {
+    //         "name": "User 1",
+    //         "age": 25,
+    //         "email": "user1@example.com"
+    //     },
+    //     {
+    //         "name": "User 2",
+    //         "age": 30,
+    //         "email": "user2@example.com"
+    //     },
+    //     {
+    //         "name": "User 3",
+    //         "age": 35,
+    //         "email": "user3@example.com"
+    //     }
+    // ])
 
-  return { theUsers }
+    const users = reactive([])
+
+    // Fetch the users data from an API
+    fetch('https://api.example.com/users')
+        .then(response => response.json())
+        .then(data => {
+            users.value = data
+        })
+        .catch(error => {
+            console.error('Error fetching users:', error)
+        })
+
+    return { users }
 })
