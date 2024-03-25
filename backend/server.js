@@ -1,4 +1,5 @@
 const express = require("express")
+const getConnection = require('./database');
 const app = express()
 
 
@@ -44,5 +45,34 @@ app.get("/delete", (rep, res)=>{
 })
 
 
+app.get("/test",async  (rep, res)=> {
+    let conn;
+    console.log("je suis dans test");
+    try {
+        conn = await getConnection();
+        console.log(conn); 
+    } catch (err) {
+        console.error(err);
+    } finally {
+        if (conn) conn.end(); // Libère la connexion
+    }
+})
 
-app.listen(7728)
+async function queryExample() {
+    let conn;
+    console.log("1_lancement de la bases");
+    try {
+        conn = await getConnection();
+        console.log(conn); 
+    } catch (err) {
+        console.error(err);
+    } finally {
+        if (conn) conn.end(); // Libère la connexion
+    }
+}
+
+queryExample();
+
+app.listen(7728, () => {
+    console.log('Serveur démarré sur le port 7728');
+  });
