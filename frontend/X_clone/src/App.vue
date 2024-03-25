@@ -40,10 +40,9 @@ const title = ref("Ça se passe maintenant!")
 
 <style scoped>
 
-html, body, #app {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+@font-face {
+  font-family: 'ChirpExtendedHeavy';
+  src: url('@/assets/fonts/ChirpExtendedHeavy.ttf') format('truetype');
 }
 
 
@@ -61,7 +60,7 @@ img{
 *:not(img){
   background-color: white;
   color: black;
-  font-family: 'Twitter Chirp Heavy', sans-serif;
+  font-family: 'ChirpExtendedHeavy', sans-serif;
 }
 
 </style>

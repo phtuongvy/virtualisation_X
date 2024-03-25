@@ -1,11 +1,10 @@
 @import './style.css';
 
-@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
-
-html, body {
-    font-family: 'Roboto', sans-serif;
-}
-  
-#app {
-    font-family: 'Roboto', sans-serif;
-}
+@font-face {
+    font-family: 'Chirp';
+    src: url('./fonts/ChirpExtendedHeavy.ttf') format('truetype'),
+        url('./fonts/ChirpBold.ttf') format('truetype'),
+        url('./fonts/ChirpMedium.ttf') format('truetype'),
+        url('./fonts/ChirpRegular.ttf') format('truetype'),
+        url('./fonts/ChirpBold.ttf') format('truetype');
+  }
