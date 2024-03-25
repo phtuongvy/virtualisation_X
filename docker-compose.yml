@@ -10,7 +10,7 @@ services:
       MYSQL_PASSWORD: mon_mot_de_passe
     volumes:
       - "./db-lib:/var/lib/mysql"
-      - "./mysql-init:/docker-entrypoint-initdb.d"
+      - "./mysql-init/init.sql:/docker-entrypoint-initdb.d"
     restart: always
   pma:
     image: phpmyadmin/phpmyadmin
