@@ -1,28 +1,26 @@
 <template>
     <div class="card" v-if="showCard">
         <div class="card-header">
-            <h1>Créer votre compte</h1>
+            <h1>Connectez-vous à Y</h1>
             <button class="close-button" @click="closeCard">X</button>
         </div>
         <div class="card-body">
-            <label for="name">Nom et prénom:</label>
-            <input type="name" id="name" v-model="name" required>
-            <label for="email">Email:</label>
+            <label for="email">Email :</label>
             <input type="email" id="email" v-model="email" required>
-            <label for="password">Mot de passe:</label>
+            <label for="password">Mot de passe :</label>
             <input type="password" id="password" v-model="password" required>
-            <button type="submit" @click="signUp">Suivant</button>
-            <p class="error-message">{{ errorMessage }}</p>
+            <button type="submit" @click="signIn">Suivant</button>
+            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         </div>
     </div>
 </template>
 
 <script>
+import { RouterLink } from 'vue-router';
 
 export default {
     data() {
         return {
-            name: '',
             email: '',
             password: '',
             errorMessage: '',
@@ -30,30 +28,19 @@ export default {
         };
     },
     methods: {
-        signUp() {
-  
-            // Example: Send a POST request to the server with the form data
-            axios.post('/api/signup', {
-                name: this.name,
-                email: this.email,
-                password: this.password
-            })
-            .then(response => {
-                // Handle successful sign-up
-                console.log(response.data);
+        signIn() {
+            if (this.email === 'idk@example.com' && this.password === 'correctPwd') {
+                // Successful sign-in logic
                 RouterLink.push('/home');
-
-            })
-            .catch(error => {
-                // Handle sign-up error
-                console.error(error);
-                this.errorMessage = 'Erreur lors de la création du compte. Veuillez réessayer.';
-            });
+            } else {
+                // Failed sign-in logic
+                this.errorMessage = 'Email ou mot de passe incorrect. Veuillez réessayer.';
+            }
         },
         closeCard() {
-           this.showCard = false;
-            
+            this.showCard = false;
         }
+        
     }
 };
 </script>
@@ -109,4 +96,13 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: rgb(79, 78, 78);
 }
+
+.close-button:hover {
+    background-color: rgb(79, 78, 78);
+    border-radius: 50%;
+    padding: 15px;
+}
+
+
+
 </style>
