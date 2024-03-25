@@ -1,4 +1,18 @@
 <template>
+    <div class="cardSignIn" v-if="showCard">
+        <div class="card-header">
+            <h1>Connectez-vous à Y</h1>
+            <button class="close-button" @click="closeCard">X</button>
+        </div>
+        <div class="card-body">
+            <label for="email">Email :</label>
+            <input type="email" id="email" v-model="email" required>
+            <label for="password">Mot de passe :</label>
+            <input type="password" id="password" v-model="password" required>
+            <button type="submit" @click="signIn">Suivant</button>
+            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        </div>
+    </div>
     <div class="cardSignUp" v-if="showCard">
         <div class="card-header">
             <h1>Créer votre compte</h1>
@@ -18,6 +32,7 @@
 </template>
 
 <script>
+import { RouterLink } from 'vue-router';
 
 export default {
     data() {
@@ -30,36 +45,48 @@ export default {
         };
     },
     methods: {
+        signIn() {
+            if (this.email === 'idk@example.com' && this.password === 'correctPwd') {
+                // Successful sign-in logic
+                RouterLink.push('/home');
+            } else {
+                // Failed sign-in logic
+                this.errorMessage = 'Email ou mot de passe incorrect. Veuillez réessayer.';
+            }
+        },
         signUp() {
-  
+
             // Example: Send a POST request to the server with the form data
             axios.post('/api/signup', {
                 name: this.name,
                 email: this.email,
                 password: this.password
             })
-            .then(response => {
-                // Handle successful sign-up
-                console.log(response.data);
-                RouterLink.push('/home');
+                .then(response => {
+                    // Handle successful sign-up
+                    console.log(response.data);
+                    RouterLink.push('/home');
 
-            })
-            .catch(error => {
-                // Handle sign-up error
-                console.error(error);
-                this.errorMessage = 'Erreur lors de la création du compte. Veuillez réessayer.';
-            });
+                })
+                .catch(error => {
+                    // Handle sign-up error
+                    console.error(error);
+                    this.errorMessage = 'Erreur lors de la création du compte. Veuillez réessayer.';
+                });
         },
         closeCard() {
-           this.showCard = false;
-            
+            this.showCard = false;
+        },
+        openCard() {
+            this.showCard = true;
         }
+
     }
 };
 </script>
 
 <style scoped>
-.cardSignUp {
+.card {
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
@@ -115,6 +142,4 @@ button[type="submit"]:hover {
     border-radius: 50%;
     padding: 15px;
 }
-
-
 </style>
