@@ -43,7 +43,24 @@ const title = ref("Ça se passe maintenant!")
 @font-face {
   font-family: 'ChirpExtendedHeavy';
   src: url('@/assets/fonts/ChirpExtendedHeavy.ttf') format('truetype');
+    
 }
+
+@font-face {
+  font-family: 'ChirpRegular';
+  src: url('@/assets/fonts/ChirpRegular.ttf') format('truetype');
+}
+
+a {
+  border-radius: 20px;
+  text-decoration: none;
+  margin: 10px;
+  background-color: black;
+  color: white;
+  padding: 10px;
+  font-family: 'ChirpRegular', sans-serif;
+}
+
 
 
 .signupAndLogo{ 
