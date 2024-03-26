@@ -1,16 +1,20 @@
 <script setup>
 defineProps({
-  msg: {
-    type: String,
+  value: {
     required: true
   }
 })
 </script>
 
+
+
 <template>
-  <h1>{{ msg }}</h1>
+  <div> 
+    {{ value }}
+  </div>
 </template>
 
-<style scoped>
 
+
+<style scoped>
 </style>

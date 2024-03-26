@@ -1,12 +1,9 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import { ref, computed, createApp } from 'vue'
-import HelloWorld from '@/components/HelloWorld.vue'
 import Start from '@/components/Start.vue'
 
 
-
-const title = ref("Ça se passe maintenant!")
 
 </script>
 
@@ -20,9 +17,9 @@ const title = ref("Ça se passe maintenant!")
   
       <div>
         
-          <HelloWorld :msg="title" /> 
+          <h1>Ça se passe maintenant!</h1>
     
-          <HelloWorld msg="Inscrivez-vous."/>
+          <h2>Inscrivez vous.</h2>
           <!-- <RouterLink to="/signup">Créer un compte</RouterLink> -->
           <button class="btnSignUp"><RouterLink to="/signup">Créer un compte</RouterLink></button>
           <h2>Vous avez déjà un compte ?</h2>
