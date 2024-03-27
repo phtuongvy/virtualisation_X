@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+  app:
+      build:
+        context: ./backend # Chemin vers le dossier contenant le Dockerfile
+        dockerfile: Dockerfile # Nom du Dockerfile, si différent de 'Dockerfile'
+      ports:
+        - "3000:3000"
+      restart: always
+
+
+  database:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: X_database
+      MYSQL_USER: mon_user
+      MYSQL_PASSWORD: mon_mot_de_passe
+    volumes:
+      - "./db-lib:/var/lib/mysql"
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+    restart: always
+  pma:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8095:80"
+    environment:
+      PMA_HOST: database
+      PMA_USER: root
+      PMA_PASSWORD: root
+    restart: always

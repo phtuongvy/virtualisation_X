@@ -1,0 +1,26 @@
+# Utiliser l'image officielle Node.js comme image de base
+FROM node:16
+
+# Définir le répertoire de travail dans le conteneur
+WORKDIR /usr/src/app
+
+# Copier le fichier 'package.json' et 'package-lock.json' (si disponible)
+COPY package.json ./
+
+# Installer les dépendances du projet
+RUN npm install
+RUN npm install mysql2 
+
+
+# Assurez-vous que les chemins relatifs sont corrects par rapport à l'emplacement du Dockerfile
+COPY database.js ./
+COPY server.js ./
+COPY package-lock.json ./
+
+
+
+# Exposer le port sur lequel l'application va s'exécuter
+EXPOSE 3000
+
+# Définir la commande pour démarrer l'application
+CMD [ "node", "server.js" ]
