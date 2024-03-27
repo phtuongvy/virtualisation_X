@@ -1,5 +1,5 @@
 <template>
-    <div class="card" v-if="showCard">
+    <div class="cardSignUp" v-if="showCard">
         <div class="card-header">
             <h1>Créer votre compte</h1>
             <button class="close-button" @click="closeCard">X</button>
@@ -59,7 +59,7 @@ export default {
 </script>
 
 <style scoped>
-.card {
+.cardSignUp {
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
