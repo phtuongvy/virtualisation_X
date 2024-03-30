@@ -7,7 +7,7 @@ export const twitterStore = defineStore('twitter', () => {
 
   const user = ref(null)
   const tweets = ref([])
-  const url = "http://localhost:8080/"
+  const url = "http://localhost:30001/"
 
 
   function login(auth) {
@@ -31,7 +31,7 @@ export const twitterStore = defineStore('twitter', () => {
     })
   }
 
-  axios.get(url+"tweets")
+  axios.get(url+"users")
     .then( response => {
       console.log(response.data)
       tweets.value = response.data
