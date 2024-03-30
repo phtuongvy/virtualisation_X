@@ -5,8 +5,8 @@
             <button class="close-button" @click="closeCard">X</button>
         </div>
         <div class="card-body">
-            <label for="email">Email :</label>
-            <input type="email" id="email" v-model="email" required>
+            <label for="username">Nom d'utilisateur :</label>
+            <input type="username" id="username" v-model="username" required>
             <label for="password">Mot de passe :</label>
             <input type="password" id="password" v-model="password" required>
             <button type="submit" @click="signIn">Suivant</button>
@@ -21,8 +21,8 @@
         <div class="card-body">
             <label for="name">Nom et prénom :</label>
             <input type="name" id="name" v-model="name" required>
-            <label for="email">Email:</label>
-            <input type="email" id="email" v-model="email" required>
+            <label for="username">Nom d'utilisateur :</label>
+            <input type="username" id="username" v-model="username" required>
             <label for="password">Mot de passe :</label>
             <input type="password" id="password" v-model="password" required>
             <button type="submit" @click="signUp">Suivant</button>
@@ -38,50 +38,20 @@ export default {
     data() {
         return {
             name: '',
-            email: '',
+            username: '',
             password: '',
             errorMessage: '',
             showCard: false
         };
     },
     methods: {
-        async signIn() {
+        signIn() {
             this.showCard = true;
-            try {
-                const response = await axios.post('https://your-api-url.com/auth/signin', {
-                    email: this.email,
-                    password: this.password
-                });
 
-                if (response.data.success) {
-                    // Successful sign-in logic
-                    this.$router.push('/home');
-                } else {
-                    // Failed sign-in logic
-                    this.errorMessage = 'Email ou mot de passe incorrect. Veuillez réessayer.';
-                }
-            } catch (error) {
-                // Error handling logic
-                console.error(error);
-                this.errorMessage = 'Une erreur est survenue. Veuillez réessayer.';
-            }
         },
-        async signUp() {
-            try {
-                const response = await axios.post('/api/signup', {
-                    name: this.name,
-                    email: this.email,
-                    password: this.password
-                });
+        signUp() {
 
-                // Handle successful sign-up
-                console.log(response.data);
-                this.$router.push('/home');
-            } catch (error) {
-                // Handle sign-up error
-                console.error(error);
-                this.errorMessage = 'Erreur lors de la création du compte. Veuillez réessayer.';
-            }
+            this.showCard = true;
         },
         closeCard() {
             this.showCard = false;
@@ -125,7 +95,7 @@ export default {
     flex-direction: column;
 }
 
-input[type="email"],
+input[type="username"],
 input[type="password"] {
     margin-bottom: 8px;
     padding: 8px;

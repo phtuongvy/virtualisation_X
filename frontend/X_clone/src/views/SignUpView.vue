@@ -7,8 +7,8 @@
         <div class="card-body">
             <label for="name">Nom et prénom :</label>
             <input type="name" id="name" v-model="name" required>
-            <label for="email">Email:</label>
-            <input type="email" id="email" v-model="email" required>
+            <label for="username">Nom d'utilisateur :</label>
+            <input type="username" id="username" v-model="username" required>
             <label for="password">Mot de passe :</label>
             <input type="password" id="password" v-model="password" required>
             <button type="submit" @click="signUp">Suivant</button>
@@ -19,40 +19,45 @@
 
 <script>
 
+import axios from 'axios';
+
 export default {
     data() {
         return {
-            name: '',
-            email: '',
+            userPseudo: '',
+            username: '',
+            userBirthday: '',
             password: '',
+            userRole: '',
+            userPremium: '',
             errorMessage: '',
             showCard: true
         };
     },
     methods: {
-        signUp() {
-  
-            // Example: Send a POST request to the server with the form data
-            axios.post('/api/signup', {
-                name: this.name,
-                email: this.email,
-                password: this.password
-            })
-            .then(response => {
+        async signUp() {
+            try {
+                const response = await axios.post('http://localhost:30001/register', {
+                    YUSERPSEUDO: this.userPseudo, // assuming you have a data property for userPseudo
+                    YUSERNAME: this.username,
+                    YUSERBIRTHDAY: this.userBirthday, // assuming you have a data property for userBirthday
+                    YUSERPASSWORD: this.password,
+                    YUSERROLE: this.userRole, // assuming you have a data property for userRole
+                    YUSERPREMIUM: this.userPremium // assuming you have a data property for userPremium
+                });
+
                 // Handle successful sign-up
                 console.log(response.data);
-                RouterLink.push('/home');
-
-            })
-            .catch(error => {
+                this.$router.push('/home');
+            } catch (error) {
                 // Handle sign-up error
                 console.error(error);
                 this.errorMessage = 'Erreur lors de la création du compte. Veuillez réessayer.';
-            });
+            }
         },
         closeCard() {
-           this.showCard = false;
-            
+            this.showCard = false;
+
         }
     }
 };
@@ -89,7 +94,7 @@ export default {
     flex-direction: column;
 }
 
-input[type="email"],
+input[type="username"],
 input[type="password"] {
     margin-bottom: 8px;
     padding: 8px;
@@ -115,6 +120,4 @@ button[type="submit"]:hover {
     border-radius: 50%;
     padding: 15px;
 }
-
-
 </style>

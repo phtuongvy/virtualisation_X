@@ -5,8 +5,8 @@
             <button class="close-button" @click="closeCard">X</button>
         </div>
         <div class="card-body">
-            <label for="email">Email :</label>
-            <input type="email" id="email" v-model="email" required>
+            <label for="username">Nom d'utilisateur :</label>
+            <input type="username" id="username" v-model="username" required>
             <label for="password">Mot de passe :</label>
             <input type="password" id="password" v-model="password" required>
             <button type="submit" @click="signIn">Suivant</button>
@@ -18,23 +18,36 @@
 <script>
 import { RouterLink } from 'vue-router';
 
+import axios from 'axios';
+
 export default {
     data() {
         return {
-            email: '',
+            username: '',
             password: '',
             errorMessage: '',
             showCard: true
         };
     },
     methods: {
-        signIn() {
-            if (this.email === 'idk@example.com' && this.password === 'correctPwd') {
-                // Successful sign-in logic
-                RouterLink.push('/home');
-            } else {
-                // Failed sign-in logic
-                this.errorMessage = 'Email ou mot de passe incorrect. Veuillez réessayer.';
+        async signIn() {
+            try {
+                const response = await axios.post('http://localhost:30001/login', {
+                    username: this.username, // assuming you have a data property for username
+                    password: this.password
+                });
+
+                if (response.status === 200) {
+                    // Successful login logic
+                    this.$router.push('/home');
+                } else {
+                    // Failed login logic
+                    this.errorMessage = 'Nom d\'utilisateur ou mot de passe incorrect. Veuillez réessayer.';
+                }
+            } catch (error) {
+                // Error handling logic
+                console.error(error);
+                this.errorMessage = 'Une erreur est survenue. Veuillez réessayer.';
             }
         },
         closeCard() {
@@ -76,7 +89,7 @@ export default {
     flex-direction: column;
 }
 
-input[type="email"],
+input[type="username"],
 input[type="password"] {
     margin-bottom: 8px;
     padding: 8px;
