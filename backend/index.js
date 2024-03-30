@@ -43,62 +43,62 @@ var connectionOptions = {
 
 
  
-//  app.post('/login', function(req, res) {
+ app.post('/login', function(req, res) {
       
-//    var connection = mysql.createConnection(connectionOptions);
-//    var queryStr = 'SELECT * FROM `YUSER` WHERE `YUSERNAME` = ? AND `YPASSWORD` = ?';
+   var connection = mysql.createConnection(connectionOptions);
+   var queryStr = 'SELECT * FROM `YUSER` WHERE `YUSERNAME` = ? AND `YPASSWORD` = ?';
    
-//    connection.connect();
+   connection.connect();
 
-//    connection.query(queryStr, [req.query.username, req.query.password], function (error, results, fields) {
+   connection.query(queryStr, [req.query.username, req.query.password], function (error, results, fields) {
    
-//       if (error) {
-//       console.error('Une erreur est survenue lors de la requête à la base de données:', error);
-//       res.status(500).json({error: "Une erreur interne est survenue"});
-//       return;
-//       }
+      if (error) {
+      console.error('Une erreur est survenue lors de la requête à la base de données:', error);
+      res.status(500).json({error: "Une erreur interne est survenue"});
+      return;
+      }
    
-//    if(results.length == 0) {
-//       res.status(404).json({message: "Nom d'utilisateur ou mot de passe incorrect"});
-//       return;
-//    }
+   if(results.length == 0) {
+      res.status(404).json({message: "Nom d'utilisateur ou mot de passe incorrect"});
+      return;
+   }
 
-//    res.status(200).json(results);
-//    });
+   res.status(200).json(results);
+   });
    
-//    connection.end();
-// });
+   connection.end();
+});
 
-// var bcrypt = require('bcrypt');
-// var saltRounds = 10;
+var bcrypt = require('bcrypt');
+var saltRounds = 10;
 
-// app.post('/register', function(req, res) {
-//   var connection = mysql.createConnection(connectionOptions);
-//   var queryStr = 'INSERT INTO `YUSER` (`YUSERID`, `YUSERPSEUDO`, `YUSERNAME`, `YUSERBIRTHDAY`, `YUSERPASSWORD`, `YUSERROLE`, `YUSERPREMIUM`) VALUES (?, ?, ?, ?, ?, ?, ?)';
+app.post('/register', function(req, res) {
+  var connection = mysql.createConnection(connectionOptions);
+  var queryStr = 'INSERT INTO `YUSER` (`YUSERID`, `YUSERPSEUDO`, `YUSERNAME`, `YUSERBIRTHDAY`, `YUSERPASSWORD`, `YUSERROLE`, `YUSERPREMIUM`) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
-//   // Hash password
-//   bcrypt.hash(req.body.YUSERPASSWORD, saltRounds, function(err, hash) {
-//       if (err) {
-//          console.error('Une erreur est survenue lors du hachage du mot de passe:', err);
-//           res.status(500).json({error: "Une erreur interne est survenue"});
-//           return;
-//       }
+  // Hash password
+  bcrypt.hash(req.body.YUSERPASSWORD, saltRounds, function(err, hash) {
+      if (err) {
+         console.error('Une erreur est survenue lors du hachage du mot de passe:', err);
+          res.status(500).json({error: "Une erreur interne est survenue"});
+          return;
+      }
 
-//       connection.connect();
+      connection.connect();
 
-//       connection.query(queryStr, [req.body.YUSERID, req.body.YUSERPSEUDO, req.body.YUSERNAME, req.body.YUSERBIRTHDAY, hash, req.body.YUSERROLE, req.body.YUSERPREMIUM], function (error, results, fields) {
-//           if (error) {
-//              console.error('Une erreur est survenue lors de la requête à la base de données:', error);
-//               res.status(500).json({error: "Une erreur interne est survenue"});
-//               return;
-//           }
+      connection.query(queryStr, [req.body.YUSERID, req.body.YUSERPSEUDO, req.body.YUSERNAME, req.body.YUSERBIRTHDAY, hash, req.body.YUSERROLE, req.body.YUSERPREMIUM], function (error, results, fields) {
+          if (error) {
+             console.error('Une erreur est survenue lors de la requête à la base de données:', error);
+              res.status(500).json({error: "Une erreur interne est survenue"});
+              return;
+          }
 
-//           res.status(200).json({message: "Utilisateur enregistré avec succès"});
-//       });
+          res.status(200).json({message: "Utilisateur enregistré avec succès"});
+      });
 
-//       connection.end();
-//   });
-// });
+      connection.end();
+  });
+});
 
 
  app.get('/comment', function(req, res) {
