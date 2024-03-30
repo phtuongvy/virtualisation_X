@@ -41,38 +41,47 @@ export default {
             email: '',
             password: '',
             errorMessage: '',
-            showCard: true
+            showCard: false
         };
     },
     methods: {
-        signIn() {
-            if (this.email === 'idk@example.com' && this.password === 'correctPwd') {
-                // Successful sign-in logic
-                RouterLink.push('/home');
-            } else {
-                // Failed sign-in logic
-                this.errorMessage = 'Email ou mot de passe incorrect. Veuillez réessayer.';
+        async signIn() {
+            this.showCard = true;
+            try {
+                const response = await axios.post('https://your-api-url.com/auth/signin', {
+                    email: this.email,
+                    password: this.password
+                });
+
+                if (response.data.success) {
+                    // Successful sign-in logic
+                    this.$router.push('/home');
+                } else {
+                    // Failed sign-in logic
+                    this.errorMessage = 'Email ou mot de passe incorrect. Veuillez réessayer.';
+                }
+            } catch (error) {
+                // Error handling logic
+                console.error(error);
+                this.errorMessage = 'Une erreur est survenue. Veuillez réessayer.';
             }
         },
-        signUp() {
-
-            // Example: Send a POST request to the server with the form data
-            axios.post('/api/signup', {
-                name: this.name,
-                email: this.email,
-                password: this.password
-            })
-                .then(response => {
-                    // Handle successful sign-up
-                    console.log(response.data);
-                    RouterLink.push('/home');
-
-                })
-                .catch(error => {
-                    // Handle sign-up error
-                    console.error(error);
-                    this.errorMessage = 'Erreur lors de la création du compte. Veuillez réessayer.';
+        async signUp() {
+            try {
+                const response = await axios.post('/api/signup', {
+                    name: this.name,
+                    email: this.email,
+                    password: this.password
                 });
+
+                // Handle successful sign-up
+                console.log(response.data);
+                this.$router.push('/home');
+            } catch (error) {
+                // Handle sign-up error
+                console.error(error);
+                this.errorMessage = 'Erreur lors de la création du compte. Veuillez réessayer.';
+            }
         },
         closeCard() {
             this.showCard = false;
@@ -80,8 +89,8 @@ export default {
         openCard() {
             this.showCard = true;
         }
+    },
 
-    }
 };
 </script>
 
