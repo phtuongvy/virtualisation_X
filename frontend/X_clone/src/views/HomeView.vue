@@ -44,10 +44,10 @@ export default {
   },
   methods: {
     likeTweet(tweetId) {
-      // Implement like functionality here...
+      
     },
     retweet(tweetId) {
-      // Implement retweet functionality here...
+      
     }
   }
 };
