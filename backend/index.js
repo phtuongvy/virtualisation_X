@@ -7,13 +7,10 @@ var app = express();
 
 // for CORS error
 
-app.all('', function(req, res, next) {
-   res.header('Access-Control-Allow-Origin', '');
-   res.header('Access-Control-Allow-Credentials', true);
-   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-   res.header('Access-Control-Allow-Headers', 'Origin, Accept, X-Requested-With, Content-Type');
-   next();
-});
+res.header('Access-Control-Allow-Origin', '*'); 
+res.header('Access-Control-Allow-Credentials', true);
+res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
 // Définition du port sur lequel le serveur va écouter. Utilise une variable d'environnement ou un port par défaut.
 var port = process.env.PORT || 8005;
