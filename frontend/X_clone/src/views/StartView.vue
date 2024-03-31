@@ -63,6 +63,21 @@ button{
 
 .btnSignUp {
   background-color: #1DA1F2;
+  color: black; 
+  border: none; 
+  padding: 10px 20px; 
+  text-align: center; 
+  text-decoration: none; 
+  display: inline-block; 
+  font-size: 16px; 
+  margin: 4px 2px; 
+  cursor: pointer; 
+  transition-duration: 0.4s;
+}
+
+.btnSignUp:hover {
+  background-color: white; /* Change the background color when hovered over */
+  color: #1DA1F2; /* Change the text color when hovered over */
 }
 
 body{
