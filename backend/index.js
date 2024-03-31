@@ -50,7 +50,7 @@ var connectionOptions = {
    
    connection.connect();
 
-   connection.query(queryStr, [req.query.username, req.query.password], function (error, results, fields) {
+   connection.query(queryStr, [req.body.username, req.body.password], function (error, results, fields) {
    
       if (error) {
       console.error('Une erreur est survenue lors de la requête à la base de données:', error);

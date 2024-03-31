@@ -5,12 +5,15 @@
             <button class="close-button" @click="closeCard">X</button>
         </div>
         <div class="card-body">
-            <label for="username">Nom d'utilisateur :</label>
-            <input type="username" id="username" v-model="username" required>
-            <label for="password">Mot de passe :</label>
-            <input type="password" id="password" v-model="password" required>
-            <button type="submit" @click="signIn">Suivant</button>
-            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+            <form @submit.prevent="signIn">
+                <label for="username">Nom d'utilisateur :</label>
+                <input type="username" id="username" v-model="username" required>
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" v-model="password" required>
+                <button type="submit">Suivant</button>
+                <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+            
+            </form>
         </div>
     </div>
 </template>
@@ -33,7 +36,7 @@ export default {
         async signIn() {
             try {
                 const response = await axios.post('http://localhost:30001/login', {
-                    username: this.username, // assuming you have a data property for username
+                    username: this.username,
                     password: this.password
                 });
 
