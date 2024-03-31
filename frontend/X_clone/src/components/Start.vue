@@ -29,6 +29,7 @@
             <p class="error-message">{{ errorMessage }}</p>
         </div>
     </div>
+    <div><RouterLink to="/home">Home</RouterLink></div>
 </template>
 
 <script>

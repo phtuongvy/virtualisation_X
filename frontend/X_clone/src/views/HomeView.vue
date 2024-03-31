@@ -3,10 +3,10 @@
     <h1>Bienvenue à Y</h1>
     <div v-for="tweet in tweets" :key="tweet.postid" class="tweet">
       <div class="tweet-header">
-        <img :src="tweet.user.avatar" alt="User Avatar" class="avatar" />
+        <img :src="getUserAvatar(tweet.userid)" alt="User avatar" class="avatar">
         <div class="user-info">
-          <h3>{{ tweet.user.name }}</h3>
-          <p>{{ tweet.user.username }}</p>
+          <h3>{{ getUserInfo(tweet.userid).name }}</h3>
+          <p>{{ getUserInfo(tweet.userid).username }}</p>
         </div>
       </div>
       <p class="tweet-content">{{ tweet.postdescription }}</p>
@@ -32,7 +32,9 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      tweets: []
+      tweets: [],
+      users: [],
+      media: []
     };
   },
   created() {
@@ -43,14 +45,52 @@ export default {
       .catch(error => {
         console.error(error);
       });
+      
+    axios.get('http://localhost:30001/users')
+      .then(response => {
+        this.users = response.data;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    axios.get('http://localhost:30001/media')
+      .then(response => {
+        this.media = response.data;
+      })
+      .catch(error => {
+        console.error(error);
+      });
   },
   methods: {
     likeTweet(tweetId) {
-      
+      axios.post(`http://localhost:30001/posts/${tweetId}/like`)
+        .then(response => {
+          // Update the tweet's likes in the local state
+          const tweet = this.tweets.find(tweet => tweet.postid === tweetId);
+          tweet.likes = response.data.likes;
+        })
+        .catch(error => {
+          console.error(error);
+        });
     },
     retweet(tweetId) {
-      
-    }
+      axios.post(`http://localhost:30001/posts/${tweetId}/retweet`)
+        .then(response => {
+          // Update the tweet's retweets in the local state
+          const tweet = this.tweets.find(tweet => tweet.postid === tweetId);
+          tweet.retweets = response.data.retweets;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    getUserAvatar(userId) {
+      const userMedia = this.media.find(media => media.userid === userId);
+      return userMedia ? userMedia.avatar : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg';
+    },
+    getUserInfo(userId) {
+      return this.users.find(user => user.userid === userId) || {};
+    },
   }
 };
 </script>

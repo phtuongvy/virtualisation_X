@@ -5,15 +5,14 @@
             <button class="close-button" @click="closeCard">X</button>
         </div>
         <div class="card-body">
-            <form @submit.prevent="signIn">
-                <label for="username">Nom d'utilisateur :</label>
-                <input type="username" id="username" v-model="username" required>
-                <label for="password">Mot de passe :</label>
-                <input type="password" id="password" v-model="password" required>
-                <button type="submit">Suivant</button>
-                <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-            
-            </form>
+            <label for="username">Nom d'utilisateur :</label>
+            <input type="username" id="username" v-model="username" required>
+            <label for="password">Mot de passe :</label>
+            <input type="password" id="password" v-model="password" required>
+            <button type="submit" @click="signIn">Suivant</button>
+            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+
         </div>
     </div>
 </template>
@@ -56,7 +55,7 @@ export default {
         closeCard() {
             this.showCard = false;
         }
-        
+
     }
 };
 </script>
@@ -118,7 +117,4 @@ button[type="submit"]:hover {
     border-radius: 50%;
     padding: 15px;
 }
-
-
-
 </style>

@@ -7,10 +7,13 @@ var app = express();
 
 // for CORS error
 
-res.header('Access-Control-Allow-Origin', '*'); 
-res.header('Access-Control-Allow-Credentials', true);
-res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+app.use((req, res, next) => {
+   res.header('Access-Control-Allow-Origin', '*'); 
+   res.header('Access-Control-Allow-Credentials', true);
+   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+   next();
+ });
 
 // Définition du port sur lequel le serveur va écouter. Utilise une variable d'environnement ou un port par défaut.
 var port = process.env.PORT || 8005;
@@ -43,7 +46,7 @@ var connectionOptions = {
  app.post('/login', function(req, res) {
       
    var connection = mysql.createConnection(connectionOptions);
-   var queryStr = 'SELECT * FROM `YUSER` WHERE `YUSERNAME` = ? AND `YPASSWORD` = ?';
+   var queryStr = 'SELECT * FROM `YUSER` WHERE `YUSERNAME` = ? AND `YUSERPASSWORD` = ?';
    
    connection.connect();
 
@@ -80,6 +83,25 @@ app.post('/register', function(req, res) {
        }
  
        res.status(200).json({message: "Utilisateur enregistré avec succès"});
+   });
+ 
+   connection.end();
+ });
+
+ app.post('/posts/:id/like', function(req, res) {
+   var connection = mysql.createConnection(connectionOptions);
+   var queryStr = 'INSERT INTO `liked` (`userid`, `postid`) VALUES (?, ?)';
+ 
+   connection.connect();
+ 
+   connection.query(queryStr, [req.body.userid, req.params.id], function (error, results, fields) {
+     if (error) {
+       console.error('Une erreur est survenue lors de la requête à la base de données:', error);
+       res.status(500).json({error: "Une erreur interne est survenue"});
+       return;
+     }
+ 
+     res.status(200).json({message: "Publication aimée avec succès"});
    });
  
    connection.end();
