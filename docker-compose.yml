@@ -37,3 +37,15 @@ services:
       - PMA_PASSWORD=root
       - PMA_PORT= 3306
     container_name: moe-phpmyadmin-app
+
+  frontend:
+    build:
+      context: ./frontend/X_clone
+      dockerfile: Dockerfile
+    ports:
+      - "30003:8080"
+    volumes:
+      - ./frontend/X_clone:/frontend/X_clone
+    depends_on:
+      - nodejs
+    container_name: moe-frontend-app

@@ -69,36 +69,24 @@ var connectionOptions = {
    connection.end();
 });
 
-var bcrypt = require('bcrypt');
-var saltRounds = 10;
-
 app.post('/register', function(req, res) {
-  var connection = mysql.createConnection(connectionOptions);
-  var queryStr = 'INSERT INTO `YUSER` (`YUSERID`, `YUSERPSEUDO`, `YUSERNAME`, `YUSERBIRTHDAY`, `YUSERPASSWORD`, `YUSERROLE`, `YUSERPREMIUM`) VALUES (?, ?, ?, ?, ?, ?, ?)';
-
-  // Hash password
-  bcrypt.hash(req.body.YUSERPASSWORD, saltRounds, function(err, hash) {
-      if (err) {
-         console.error('Une erreur est survenue lors du hachage du mot de passe:', err);
-          res.status(500).json({error: "Une erreur interne est survenue"});
-          return;
-      }
-
-      connection.connect();
-
-      connection.query(queryStr, [req.body.YUSERID, req.body.YUSERPSEUDO, req.body.YUSERNAME, req.body.YUSERBIRTHDAY, hash, req.body.YUSERROLE, req.body.YUSERPREMIUM], function (error, results, fields) {
-          if (error) {
-             console.error('Une erreur est survenue lors de la requête à la base de données:', error);
-              res.status(500).json({error: "Une erreur interne est survenue"});
-              return;
-          }
-
-          res.status(200).json({message: "Utilisateur enregistré avec succès"});
-      });
-
-      connection.end();
-  });
-});
+   var connection = mysql.createConnection(connectionOptions);
+   var queryStr = 'INSERT INTO `YUSER` (`YUSERID`, `YUSERPSEUDO`, `YUSERNAME`, `YUSERBIRTHDAY`, `YUSERPASSWORD`, `YUSERROLE`, `YUSERPREMIUM`) VALUES (?, ?, ?, ?, ?, ?, ?)';
+ 
+   connection.connect();
+ 
+   connection.query(queryStr, [req.body.YUSERID, req.body.YUSERPSEUDO, req.body.YUSERNAME, req.body.YUSERBIRTHDAY, req.body.YUSERPASSWORD, req.body.YUSERROLE, req.body.YUSERPREMIUM], function (error, results, fields) {
+       if (error) {
+          console.error('Une erreur est survenue lors de la requête à la base de données:', error);
+           res.status(500).json({error: "Une erreur interne est survenue"});
+           return;
+       }
+ 
+       res.status(200).json({message: "Utilisateur enregistré avec succès"});
+   });
+ 
+   connection.end();
+ });
 
 
  app.get('/comment', function(req, res) {
