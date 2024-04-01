@@ -1,117 +1,96 @@
-<template>
-    <div class="card" v-if="showCard">
-        <div class="card-header">
-            <h1>Connectez-vous à Y</h1>
-            <button class="close-button" @click="closeCard">X</button>
-        </div>
-        <div class="card-body">
-            <label for="username">Nom d'utilisateur :</label>
-            <input type="username" id="username" v-model="YUSERNAME" required>
-            <label for="password">Mot de passe :</label>
-            <input type="password" id="password" v-model="YUSERPASSWORD" required>
-            <button type="submit" @click="signIn">Suivant</button>
-            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+<script setup>
+import { ref, computed, reactive } from 'vue'
+import { useUsersStore } from '@/stores/users';
 
+const users = useUsersStore()
 
-        </div>
-    </div>
-</template>
+const authlogin = ref("")
+const authpasswd = ref("") 
 
-<script>
-import { RouterLink } from 'vue-router';
-
-import axios from 'axios';
-
-export default {
-    data() {
-        return {
-            YUSERNAME: '',
-            YUSERPASSWORD: '',
-            errorMessage: '',
-            showCard: true
-        };
-    },
-    methods: {
-        async signIn() {
-            const auth = { YUSERNAME: this.YUSERNAME, YUSERPASSWORD: this.YUSERPASSWORD };
-            const url = 'http://localhost:30001/login';
-            try {
-                const response = await axios.post(url, auth)
-                    .then(response => console.log(response.data))
-                if (response.data.error) {
-                    this.errorMessage = response.data.error;
-                } else {
-                    this.$router.push('/home');
-                    this.$emit('signed-in', response.data);
-                    this.showCard = false;
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        },
-        closeCard() {
-            this.showCard = false;
-        }
-
-    }
-};
+function login() {
+    users.login({ 
+        login: authlogin.value, 
+        password: authpasswd.value
+   })
+    console.log(authpasswd)
+}
+ 
 </script>
 
+
+<template>
+
+<div id="auth"> 
+
+       
+<input v-model="authlogin">
+<input v-model="authpasswd">
+
+<button @click="login">Connecter</button>
+
+
+<!-- <div id="logout" v-if="users.user">
+  <button @click="logout">Déconnecter</button>
+</div> -->
+
+
+
+</div>
+    
+</template>
+
+
+
 <style scoped>
-.card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin: 0 auto;
-    background-color: black;
-    color: white;
-}
 
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f8fa;
+      color: #14171a;
+      display: flex;
+      justify-content: center; /* Centre horizontalement */
+      align-items: center; /* Centre verticalement */
+      height: 100vh; /* S'assure que le body prend toute la hauteur de la fenêtre */
+      margin: 0;
+    }
 
-.close-button {
-    background-color: transparent;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
+    #auth {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 300px;
+    }
 
-.card-body {
-    display: flex;
-    flex-direction: column;
-}
+    #login {
+      display: flex;
+      flex-direction: column;
+    }
 
-input[type="username"],
-input[type="password"] {
-    margin-bottom: 8px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
+    input[v-model="authlogin"],
+    input[v-model="authpasswd"] {
+      border: 1px solid #ccd6dd;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
 
-button[type="submit"] {
-    padding: 8px 16px;
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
+    button {
+      background-color: #1da1f2;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
 
-button[type="submit"]:hover {
-    background-color: rgb(79, 78, 78);
-}
+    button:hover {
+      background-color: #1991db;
+    }
 
-.close-button:hover {
-    background-color: rgb(79, 78, 78);
-    border-radius: 50%;
-    padding: 15px;
-}
+
+
 </style>
