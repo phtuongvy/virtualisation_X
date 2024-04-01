@@ -11,7 +11,7 @@
       </div>
       <p class="tweet-content">{{ tweet.postdescription }}</p>
       <div class="tweet-footer">
-        <button @click="likeTweet(tweet.postid)" class="like-button">
+        <button @click="likeTweet(tweet)" class="like-button">
           {{ tweet.likes }} Likes
         </button>
         <button @click="retweet(tweet.postid)" class="retweet-button">
@@ -53,12 +53,16 @@ export default {
     });
   },
   methods: {
-    likeTweet(tweetId) {
-      axios.post(`http://localhost:30001/posts/${tweetId}/like`)
+    likeTweet(tweet) {
+      console.log(tweet); // Log the tweet object
+
+      const userid = tweet.YUSERID;
+      console.log(userid); // Log the user ID
+
+      axios.post(`http://localhost:30001/posts/${tweet.POSTID}/like`, { userid })
         .then(response => {
           // Update the tweet's likes in the local state
-          const tweet = this.tweets.find(tweet => tweet.postid === tweetId);
-          tweet.likes = response.data.likes;
+          tweet.likes += 1; // Increment the tweet's likes
         })
         .catch(error => {
           console.error(error);

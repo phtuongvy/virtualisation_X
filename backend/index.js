@@ -90,11 +90,11 @@ app.post('/register', function(req, res) {
 
  app.post('/posts/:id/like', function(req, res) {
    var connection = mysql.createConnection(connectionOptions);
-   var queryStr = 'INSERT INTO `liked` (`userid`, `postid`) VALUES (?, ?)';
+   var queryStr = 'INSERT INTO `LIKED` (`POSTID`, `YUSERID`) VALUES (?, ?)';
  
    connection.connect();
  
-   connection.query(queryStr, [req.body.userid, req.params.id], function (error, results, fields) {
+   connection.query(queryStr, [req.body.POSTID, req.params.YUSERID], function (error, results, fields) {
      if (error) {
        console.error('Une erreur est survenue lors de la requête à la base de données:', error);
        res.status(500).json({error: "Une erreur interne est survenue"});
