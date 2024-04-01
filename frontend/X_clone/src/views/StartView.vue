@@ -44,13 +44,15 @@ import Start from '@/components/Start.vue'
     
 }
 
-html, body {
+* {
   height: 100%;
+  font-family: 'ChirpExtendedHeavy', sans-serif;
 
 }
 a{
     text-decoration: none;
     color: black;
+    background-color: transparent;
 
 }
 
@@ -76,8 +78,9 @@ button{
 }
 
 .btnSignUp:hover {
-  background-color: white; /* Change the background color when hovered over */
-  color: #1DA1F2; /* Change the text color when hovered over */
+  background-color: white;
+  color: #1DA1F2; 
+  border: 2px solid black;
 }
 
 body{
@@ -99,12 +102,6 @@ body{
 img{
   width: 265px;
   height: 239px;
-}
-
-*:not(img){
-  background-color: white;
-  color: black;
-  font-family: 'ChirpExtendedHeavy', sans-serif;
 }
 
 </style>

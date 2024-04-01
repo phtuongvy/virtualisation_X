@@ -100,6 +100,16 @@ export default {
 </script>
 
 <style scoped>
+
+@font-face {
+  font-family: 'ChirpRegular';
+  src: url('@/assets/fonts/ChirpRegular.ttf') format('truetype');
+}
+
+*{
+  font-family: 'ChirpRegular', sans-serif;
+}
+
 .tweet {
   margin-bottom: 20px;
   padding: 15px;
