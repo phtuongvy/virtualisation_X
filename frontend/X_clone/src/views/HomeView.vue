@@ -12,7 +12,7 @@
       <p class="tweet-content">{{ tweet.POSTDESCRIPTION }}</p>
       <div class="tweet-footer">
         <button @click="likeTweet(tweet)" class="like-button">
-          {{ tweet.likes }} J'aime
+          {{ getLikes(tweet) }} J'aime
         </button>
         <button @click="save(tweet)" class="save-button">
           <i class="fas fa-bookmark"></i> Enregistrer
@@ -34,35 +34,39 @@ export default {
     return {
       tweets: [],
       users: [],
-      media: []
+      media: [],
+      liked: []
     };
   },
   created() {
     Promise.all([
       axios.get('http://localhost:30001/posts'),
       axios.get('http://localhost:30001/users'),
-      axios.get('http://localhost:30001/media')
+      axios.get('http://localhost:30001/media'),
+      axios.get('http://localhost:30001/liked')
     ])
-    .then(([postsResponse, usersResponse, mediaResponse]) => {
-      this.tweets = postsResponse.data;
-      this.users = usersResponse.data;
-      this.media = mediaResponse.data;
-    })
-    .catch(error => {
-      console.error(error);
-    });
+      .then(([postsResponse, usersResponse, mediaResponse, likedResponse]) => {
+        this.tweets = postsResponse.data;
+        this.users = usersResponse.data;
+        this.media = mediaResponse.data;
+        this.liked = likedResponse.data;
+      })
+      .catch(error => {
+        console.error(error);
+      });
   },
   methods: {
     likeTweet(tweet) {
-      console.log(tweet); // Log the tweet object
-
+      console.log(tweet);
       const userid = tweet.YUSERID;
-      console.log(userid); // Log the user ID
 
-      axios.post(`http://localhost:30001/posts/${tweet.POSTID}/like`, { userid })
+      axios.post(`http://localhost:30001/posts/${tweet.POSTID}/like`, { POSTID: tweet.POSTID, YUSERID: userid })
         .then(response => {
-          // Update the tweet's likes in the local state
-          tweet.likes += 1; // Increment the tweet's likes
+          // Find the corresponding 'like' record and increment the 'likes' count
+          const likeRecord = this.liked.find(like => like.POSTID === tweet.POSTID && like.YUSERID === userid);
+          if (likeRecord) {
+            likeRecord.likes += 1;
+          }
         })
         .catch(error => {
           console.error(error);
@@ -88,6 +92,9 @@ export default {
     getUserInfo(userId) {
       return this.users.find(user => user.YUSERID === userId) || {};
     },
+    getLikes(tweet) {
+      return this.liked.filter(like => like.POSTID === tweet.POSTID).length;
+    }
   }
 };
 </script>
@@ -99,7 +106,7 @@ export default {
   border: 1px solid #e6ecf0;
   background-color: #fff;
   border-radius: 15px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.03);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.03);
 }
 
 .tweet-header {
@@ -146,5 +153,4 @@ export default {
 .save-button:hover {
   color: #1da1f2;
 }
-
 </style>
