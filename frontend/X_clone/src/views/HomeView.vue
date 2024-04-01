@@ -1,21 +1,21 @@
 <template>
   <div class="home-view">
     <h1>Bienvenue à Y</h1>
-    <div v-for="tweet in tweets" :key="tweet.postid" class="tweet" v-if="users.length && media.length">
+    <div v-for="tweet in tweets" :key="tweet.POSTID" class="tweet" v-if="users.length && media.length">
       <div class="tweet-header">
-        <img :src="getUserAvatar(tweet.yuserid)" alt="User avatar" class="avatar">
+        <img :src="getUserAvatar(tweet.YUSERID)" alt="User avatar" class="avatar">
         <div class="user-info">
-          <h3>{{ getUserInfo(tweet.userid).name }}</h3>
-          <p>{{ getUserInfo(tweet.userid).username }}</p>
+          <h3>{{ getUserInfo(tweet.YUSERID).YUSERPSEUDO }}</h3>
+          <p>{{ getUserInfo(tweet.YUSERID).YUSERNAME }}</p>
         </div>
       </div>
-      <p class="tweet-content">{{ tweet.postdescription }}</p>
+      <p class="tweet-content">{{ tweet.POSTDESCRIPTION }}</p>
       <div class="tweet-footer">
         <button @click="likeTweet(tweet)" class="like-button">
-          {{ tweet.likes }} Likes
+          {{ tweet.likes }} J'aime
         </button>
-        <button @click="retweet(tweet.postid)" class="retweet-button">
-          {{ tweet.retweets }} Retweets
+        <button @click="save(tweet.POSTID)" class="save-button">
+          <i class="fas fa-bookmark"></i> Enregistrer
         </button>
       </div>
     </div>
@@ -68,23 +68,26 @@ export default {
           console.error(error);
         });
     },
-    retweet(tweetId) {
-      axios.post(`http://localhost:30001/posts/${tweetId}/retweet`)
+    save(tweet) {
+
+      axios.post(`http://localhost:30001/posts?yuserid=${tweet.YUSERID}&postid=${tweet.POSTID}/save`)
         .then(response => {
-          // Update the tweet's retweets in the local state
-          const tweet = this.tweets.find(tweet => tweet.postid === tweetId);
-          tweet.retweets = response.data.retweets;
+          // Update the tweet's save status in the local state
+          const savedTweet = this.tweets.find(t => t.POSTID === tweet.POSTID);
+          if (savedTweet) {
+            savedTweet.save = response.data.save;
+          }
         })
         .catch(error => {
           console.error(error);
         });
     },
     getUserAvatar(userId) {
-      const userMedia = this.media.find(media => media.yuserid === userId);
-      return userMedia ? userMedia.mediacontent : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg';
+      const userMedia = this.media.find(media => media.YUSERID === userId);
+      return userMedia ? userMedia.MEDIACONTENT : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg';
     },
     getUserInfo(userId) {
-      return this.users.find(user => user.yuserid === userId) || {};
+      return this.users.find(user => user.YUSERID === userId) || {};
     },
   }
 };
@@ -130,7 +133,7 @@ export default {
 }
 
 .like-button,
-.retweet-button {
+.save-button {
   background-color: transparent;
   border: none;
   padding: 5px 10px;
@@ -141,7 +144,7 @@ export default {
 }
 
 .like-button:hover,
-.retweet-button:hover {
+.save-button:hover {
   color: #1da1f2;
 }
 

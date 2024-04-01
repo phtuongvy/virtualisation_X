@@ -88,6 +88,7 @@ app.post('/register', function(req, res) {
    connection.end();
  });
 
+
  app.post('/posts/:id/like', function(req, res) {
    var connection = mysql.createConnection(connectionOptions);
    var queryStr = 'INSERT INTO `LIKED` (`POSTID`, `YUSERID`) VALUES (?, ?)';
@@ -106,6 +107,26 @@ app.post('/register', function(req, res) {
  
    connection.end();
  });
+
+ app.post('/posts/:id/save', function(req, res) {
+   var connection = mysql.createConnection(connectionOptions);
+   var queryStr = 'INSERT INTO `SAVED` (`YUSERID`, `POSTID`) VALUES (?, ?)';
+ 
+   connection.connect();
+ 
+   connection.query(queryStr, [req.body.YUSERID, req.body.POSTID], function (error, results, fields) {
+     if (error) {
+       console.error('Une erreur est survenue lors de la requête à la base de données:', error);
+       res.status(500).json({error: "Une erreur interne est survenue"});
+       return;
+     }
+ 
+     res.status(200).json({message: "Publication enregistrée avec succès"});
+   });
+ 
+   connection.end();
+ });
+
 
 
  app.get('/comment', function(req, res) {
