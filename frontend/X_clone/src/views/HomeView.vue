@@ -14,7 +14,7 @@
         <button @click="likeTweet(tweet)" class="like-button">
           {{ tweet.likes }} J'aime
         </button>
-        <button @click="save(tweet.POSTID)" class="save-button">
+        <button @click="save(tweet)" class="save-button">
           <i class="fas fa-bookmark"></i> Enregistrer
         </button>
       </div>
@@ -69,8 +69,7 @@ export default {
         });
     },
     save(tweet) {
-
-      axios.post(`http://localhost:30001/posts?yuserid=${tweet.YUSERID}&postid=${tweet.POSTID}/save`)
+      axios.post(`http://localhost:30001/posts/${tweet.YUSERID}/save`, { YUSERID: tweet.YUSERID, POSTID: tweet.POSTID })
         .then(response => {
           // Update the tweet's save status in the local state
           const savedTweet = this.tweets.find(t => t.POSTID === tweet.POSTID);

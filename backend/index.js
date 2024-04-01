@@ -1,9 +1,11 @@
 // Importation des modules nécessaires
 var mysql = require('mysql');
-var express = require('express');
+const express = require('express');
 
 // Initialisation d'Express
 var app = express();
+
+app.use(express.json()); // for parsing application/json
 
 // for CORS error
 
@@ -108,13 +110,16 @@ app.post('/register', function(req, res) {
    connection.end();
  });
 
- app.post('/posts/:id/save', function(req, res) {
+ app.post('/posts/:yuserid/save', function(req, res) {
+   console.log('Request body: ', req.body);
    var connection = mysql.createConnection(connectionOptions);
    var queryStr = 'INSERT INTO `SAVED` (`YUSERID`, `POSTID`) VALUES (?, ?)';
  
    connection.connect();
  
    connection.query(queryStr, [req.body.YUSERID, req.body.POSTID], function (error, results, fields) {
+      console.log('Connection options:', connectionOptions);  // Add this line
+      console.log('Query string:', queryStr);  // Add this line
      if (error) {
        console.error('Une erreur est survenue lors de la requête à la base de données:', error);
        res.status(500).json({error: "Une erreur interne est survenue"});
