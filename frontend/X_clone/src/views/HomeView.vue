@@ -1,9 +1,9 @@
 <template>
   <div class="home-view">
     <h1>Bienvenue à Y</h1>
-    <div v-for="tweet in tweets" :key="tweet.postid" class="tweet">
+    <div v-for="tweet in tweets" :key="tweet.postid" class="tweet" v-if="users.length && media.length">
       <div class="tweet-header">
-        <img :src="getUserAvatar(tweet.userid)" alt="User avatar" class="avatar">
+        <img :src="getUserAvatar(tweet.yuserid)" alt="User avatar" class="avatar">
         <div class="user-info">
           <h3>{{ getUserInfo(tweet.userid).name }}</h3>
           <p>{{ getUserInfo(tweet.userid).username }}</p>
@@ -38,28 +38,19 @@ export default {
     };
   },
   created() {
-    axios.get('http://localhost:30001/posts')
-      .then(response => {
-        this.tweets = response.data;
-      })
-      .catch(error => {
-        console.error(error);
-      });
-      
-    axios.get('http://localhost:30001/users')
-      .then(response => {
-        this.users = response.data;
-      })
-      .catch(error => {
-        console.error(error);
-      });
-    axios.get('http://localhost:30001/media')
-      .then(response => {
-        this.media = response.data;
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    Promise.all([
+      axios.get('http://localhost:30001/posts'),
+      axios.get('http://localhost:30001/users'),
+      axios.get('http://localhost:30001/media')
+    ])
+    .then(([postsResponse, usersResponse, mediaResponse]) => {
+      this.tweets = postsResponse.data;
+      this.users = usersResponse.data;
+      this.media = mediaResponse.data;
+    })
+    .catch(error => {
+      console.error(error);
+    });
   },
   methods: {
     likeTweet(tweetId) {
@@ -85,11 +76,11 @@ export default {
         });
     },
     getUserAvatar(userId) {
-      const userMedia = this.media.find(media => media.userid === userId);
-      return userMedia ? userMedia.avatar : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg';
+      const userMedia = this.media.find(media => media.yuserid === userId);
+      return userMedia ? userMedia.mediacontent : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg';
     },
     getUserInfo(userId) {
-      return this.users.find(user => user.userid === userId) || {};
+      return this.users.find(user => user.yuserid === userId) || {};
     },
   }
 };
