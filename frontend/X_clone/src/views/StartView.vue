@@ -49,59 +49,62 @@ import Start from '@/components/Start.vue'
   font-family: 'ChirpExtendedHeavy', sans-serif;
 
 }
-a{
-    text-decoration: none;
-    color: black;
-    background-color: transparent;
 
+a {
+  text-decoration: none;
+  color: black;
 }
 
-button{
-    text-align: center;
-    border-radius: 20px;
-    padding: 10px;
-    
+
+.startPage {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 50px;
+}
+
+.leftColumn, .rightColumn {
+  flex: 1;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  font-size: 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition-duration: 0.4s;
 }
 
 .btnSignUp {
   background-color: #1DA1F2;
-  color: black; 
-  border: none; 
-  padding: 10px 20px; 
-  text-align: center; 
-  text-decoration: none; 
-  display: inline-block; 
-  font-size: 16px; 
-  margin: 4px 2px; 
-  cursor: pointer; 
-  transition-duration: 0.4s;
+  color: white;
+  border: none;
 }
 
 .btnSignUp:hover {
   background-color: white;
-  color: #1DA1F2; 
-  border: 2px solid black;
+  color: #1DA1F2;
+  border: 2px solid #1DA1F2;
 }
 
-body{
-    margin: 0; /*reset default margin*/
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap:200px;
-   
+.btnSignIn {
+  background-color: transparent;
+  color: #1DA1F2;
+  border: 2px solid #1DA1F2;
 }
 
-.signupAndLogo{ 
-  flex-direction: row;
-  display: flex;
-
+.btnSignIn:hover {
+  background-color: #1DA1F2;
+  color: white;
 }
 
-img{
+img {
   width: 265px;
   height: 239px;
+  margin-bottom: 20px;
 }
 
 </style>

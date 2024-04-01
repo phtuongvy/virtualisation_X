@@ -1,6 +1,26 @@
 <template>
   <div class="home-view">
     <h1>Bienvenue à Y</h1>
+    <nav class="menu">
+
+      <RouterLink to="/home">Acceuil</RouterLink>
+      <RouterLink to="/explore">Explorer</RouterLink>
+      <RouterLink to="/notifications">Notifications</RouterLink>
+      <RouterLink to="/messages">Messages</RouterLink>
+      <RouterLink to="/profile" class="profile-link">
+        <img src="https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg"
+          alt="Profile" class="profile-image">
+        Profil
+      </RouterLink>
+
+
+    </nav>
+
+    <form @submit.prevent="postTweet" class="tweet-form">
+      <textarea v-model="newTweet" placeholder="Quoi de neuf ?"></textarea>
+      <button type="submit">Tweet</button>
+    </form>
+
     <div v-for="tweet in tweets" :key="tweet.POSTID" class="tweet" v-if="users.length && media.length">
       <div class="tweet-header">
         <img :src="getUserAvatar(tweet.YUSERID)" alt="User avatar" class="avatar">
@@ -35,7 +55,8 @@ export default {
       tweets: [],
       users: [],
       media: [],
-      liked: []
+      liked: [],
+      newTweet: ''
     };
   },
   created() {
@@ -85,6 +106,23 @@ export default {
           console.error(error);
         });
     },
+    postTweet() {
+      const url = 'http://localhost:30001/posts/';
+      let newTweet = {
+        YUSERID: 2,
+        POSTDATE: Date.now(),
+        POSTDESCRIPTION: this.newTweet
+      }
+
+      axios.post(url, newTweet)
+        .then(response => {
+          this.tweets.splice(0, 0, newTweet)
+          this.newTweet = ''; // Clear the textarea
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
     getUserAvatar(userId) {
       const userMedia = this.media.find(media => media.YUSERID === userId);
       return userMedia ? userMedia.MEDIACONTENT : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg';
@@ -100,23 +138,75 @@ export default {
 </script>
 
 <style scoped>
-
 @font-face {
   font-family: 'ChirpRegular';
   src: url('@/assets/fonts/ChirpRegular.ttf') format('truetype');
 }
 
-*{
+* {
   font-family: 'ChirpRegular', sans-serif;
 }
 
+/* menu and forms style */
+
+.home-view {
+  width: 600px;
+  margin: 0 auto;
+  background-color: #F5F8FA;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E1E8ED;
+}
+
+.menu a:active {
+  color: #1DA1F2;
+}
+
+.menu a {
+  color: #657786;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.tweet-form {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #E1E8ED;
+  background-color: #FFFFFF;
+}
+
+.tweet-form textarea {
+  width: 85%;
+  height: 50px;
+  border: none;
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.tweet-form button {
+  width: 10%;
+  height: 50px;
+  background-color: #1DA1F2;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
 .tweet {
-  margin-bottom: 20px;
-  padding: 15px;
-  border: 1px solid #e6ecf0;
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.03);
+  padding: 10px;
+  border-bottom: 1px solid #E1E8ED;
+  background-color: #FFFFFF;
 }
 
 .tweet-header {
@@ -124,43 +214,46 @@ export default {
   align-items: center;
 }
 
-.avatar {
+.tweet-header .avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
   margin-right: 10px;
 }
 
-.user-info {
-  display: flex;
-  flex-direction: column;
+.tweet-header .user-info h3,
+.tweet-header .user-info p {
+  margin: 0;
 }
 
 .tweet-content {
-  margin-top: 10px;
-  color: #14171a;
+  margin: 10px 0;
   font-size: 15px;
 }
 
 .tweet-footer {
-  margin-top: 10px;
   display: flex;
   justify-content: space-between;
-}
-
-.like-button,
-.save-button {
-  background-color: transparent;
-  border: none;
-  padding: 5px 10px;
-  margin-right: 10px;
-  cursor: pointer;
   color: #657786;
-  font-size: 13px;
 }
 
-.like-button:hover,
-.save-button:hover {
-  color: #1da1f2;
+.tweet-footer button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  color: #657786;
+  text-decoration: none;
+}
+
+.profile-image {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 5px;
 }
 </style>

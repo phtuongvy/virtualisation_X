@@ -6,9 +6,9 @@
         </div>
         <div class="card-body">
             <label for="username">Nom d'utilisateur :</label>
-            <input type="username" id="username" v-model="username" required>
+            <input type="username" id="username" v-model="YUSERNAME" required>
             <label for="password">Mot de passe :</label>
-            <input type="password" id="password" v-model="password" required>
+            <input type="password" id="password" v-model="YUSERPASSWORD" required>
             <button type="submit" @click="signIn">Suivant</button>
             <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
@@ -25,31 +25,28 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            username: '',
-            password: '',
+            YUSERNAME: '',
+            YUSERPASSWORD: '',
             errorMessage: '',
             showCard: true
         };
     },
     methods: {
         async signIn() {
+            const auth = { YUSERNAME: this.YUSERNAME, YUSERPASSWORD: this.YUSERPASSWORD };
+            const url = 'http://localhost:30001/login';
             try {
-                const response = await axios.post('http://localhost:30001/login', {
-                    username: this.username,
-                    password: this.password
-                });
-
-                if (response.status === 200) {
-                    // Successful login logic
-                    this.$router.push('/home');
+                const response = await axios.post(url, auth)
+                    .then(response => console.log(response.data))
+                if (response.data.error) {
+                    this.errorMessage = response.data.error;
                 } else {
-                    // Failed login logic
-                    this.errorMessage = 'Nom d\'utilisateur ou mot de passe incorrect. Veuillez réessayer.';
+                    this.$router.push('/home');
+                    this.$emit('signed-in', response.data);
+                    this.showCard = false;
                 }
             } catch (error) {
-                // Error handling logic
                 console.error(error);
-                this.errorMessage = 'Une erreur est survenue. Veuillez réessayer.';
             }
         },
         closeCard() {
