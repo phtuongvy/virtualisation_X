@@ -2,10 +2,14 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/users'; // Assurez-vous que le chemin d'importation est correct
+import { useRouter } from 'vue-router';
+
 
 const authlogin = ref('');
 const authpasswd = ref('');
 const errorMessage = ref(''); 
+const router = useRouter(); 
+
 
 const userStore = useUserStore();
 
@@ -22,6 +26,7 @@ const login = async () => {
     });
     userStore.setUser(response.data);
     console.log(userStore.user); // Affiche les données de l'utilisateur
+    router.push({ name: 'home' }); // Remplacez 'NomDeLaRouteDestination' par le nom de la route où vous voulez rediriger l'utilisateur
   } catch (error) {
     if (error.response && error.response.status === 404) {
       errorMessage.value = "Nom d'utilisateur ou mot de passe incorrect.";
