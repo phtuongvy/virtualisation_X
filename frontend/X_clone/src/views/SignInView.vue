@@ -1,41 +1,41 @@
 <script setup>
-
-import { RouterLink } from 'vue-router';
-import { ref, computed, reactive } from 'vue'
+import { ref } from 'vue';
 import axios from 'axios';
-import user from '@/stores/users';
+import { useUserStore } from '@/stores/users'; // Assurez-vous que le chemin d'importation est correct
 
-// Définissez les variables réactives pour le login et le mot de passe
 const authlogin = ref('');
 const authpasswd = ref('');
+const errorMessage = ref(''); 
 
-// Définissez la méthode login pour envoyer une requête POST au serveur
+const userStore = useUserStore();
+
 const login = async () => {
+  errorMessage.value = ''; 
   try {
-    console.log(authlogin.value, authpasswd.value); // Juste pour déboguer
     const response = await axios.post('http://localhost:30001/login', {
       YUSERNAME: authlogin.value,
       YUSERPASSWORD: authpasswd.value,
     }, {
-          headers: {
-          'Content-Type': 'application/json'
-        }
-    });;
-    // Mettre à jour le magasin avec les données de l'utilisateur
-    store.setUser(response.data.user);
-    console.log(store.user); // Affiche les données de l'utilisateur stockées globalement
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    userStore.setUser(response.data.user);
+    console.log(userStore.user); // Affiche les données de l'utilisateur
   } catch (error) {
+    if (error.response && error.response.status === 404) {
+      errorMessage.value = "Nom d'utilisateur ou mot de passe incorrect.";
+    } 
     console.error("Erreur lors de la connexion : ", error);
   }
 };
-
- 
 </script>
 
 
 <template>
 
   <div id="auth">
+    <div v-show="errorMessage">{{ errorMessage }}</div>
     <input v-model="authlogin" type="email" placeholder="Login">
     <input v-model="authpasswd" type="password" placeholder="Mot de passe">
     <button @click="login">Connecter</button>
