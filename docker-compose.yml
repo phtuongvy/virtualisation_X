@@ -22,8 +22,8 @@ services:
       - MYSQL_DATABASE=x_database
     container_name: moe-mysql-app
     volumes:
-      - "./db-lib:/var/lib/mysql"
-      - ./db-init:/docker-entrypoint-initdb.d:ro
+      - ./db-lib:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:4.7

@@ -4,12 +4,13 @@ USE X_database;
 
 /*==============================================================*/
 /* Nom de SGBD :  PostgreSQL 8                                  */
-/* Date de cr�ation :  25/03/2024 10:34:46                      */
+/* Date de création :  02/04/2024 11:15:52                      */
 /*==============================================================*/
 
 
-drop table if exists COMMENT cascade;
 
+
+drop table if exists COMMENT cascade;
 
 drop table if exists FOLLOWERS cascade;
 
@@ -27,43 +28,176 @@ drop table if exists YUSER cascade;
 
 
 /*==============================================================*/
+/* Table : YUSER                                                */
+/*==============================================================*/
+create table YUSER (
+   YUSERID              SERIAL               not null,
+   YUSERPSEUDO          VARCHAR(30)          null,
+   YUSERNAME            VARCHAR(30)          null,
+   YUSERBIRTHDAY        DATE                 null,
+   YUSERPASSWORD        VARCHAR(50)          null,
+   YUSERROLE            VARCHAR(20)          null,
+   YUSERPREMIUM         BOOL                 null,
+   constraint PK_YUSER primary key (YUSERID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*==============================================================*/
+/* Index : USER_PK                                              */
+/*==============================================================*/
+create unique index USER_PK on YUSER (
+YUSERID
+);
+
+/*==============================================================*/
+/* Table : POST                                                 */
+/*==============================================================*/
+create table POST (
+   POSTID               SERIAL               not null,
+   YUSERID              INT4                 not null,
+   POSTDATE             DATE                 null,
+   POSTDESCRIPTION      VARCHAR(280)         null,
+   constraint PK_POST primary key (POSTID)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*==============================================================*/
+/* Index : POST_PK                                              */
+/*==============================================================*/
+create unique index POST_PK on POST (
+POSTID
+);
+
+/*==============================================================*/
+/* Index : POSTED_FK                                            */
+/*==============================================================*/
+create  index POSTED_FK on POST (
+YUSERID
+);
+
+/*==============================================================*/
 /* Table : COMMENT                                              */
 /*==============================================================*/
 create table COMMENT (
    COMMENTID            SERIAL               not null,
    POSTID               INT4                 not null,
-   YUSERID               INT4                 not null,
+   YUSERID              INT4                 not null,
    COMMENTDATE          DATE                 null,
    COMMENTTEXT          VARCHAR(2000)        null,
    constraint PK_COMMENT primary key (COMMENTID)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*==============================================================*/
+/* Index : COMMENT_PK                                           */
+/*==============================================================*/
+create unique index COMMENT_PK on COMMENT (
+COMMENTID
+);
+
+/*==============================================================*/
+/* Index : POSTCOMMENT_FK                                       */
+/*==============================================================*/
+create  index POSTCOMMENT_FK on COMMENT (
+POSTID
+);
+
+/*==============================================================*/
+/* Index : USERCOMMENT_FK                                       */
+/*==============================================================*/
+create  index USERCOMMENT_FK on COMMENT (
+YUSERID
+);
+
+/*==============================================================*/
 /* Table : FOLLOWERS                                            */
 /*==============================================================*/
 create table FOLLOWERS (
-   YUSERID               INT4                 not null,
+   YUSERID              INT4                 not null,
    FOLLOWERSID          INT4                 not null,
    constraint PK_FOLLOWERS primary key (YUSERID, FOLLOWERSID)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*==============================================================*/
+/* Index : FOLLOWERS_PK                                         */
+/*==============================================================*/
+create unique index FOLLOWERS_PK on FOLLOWERS (
+YUSERID,
+FOLLOWERSID
+);
+
+/*==============================================================*/
+/* Index : FOLLOWERS_FK                                         */
+/*==============================================================*/
+create  index FOLLOWERS_FK on FOLLOWERS (
+YUSERID
+);
+
+/*==============================================================*/
+/* Index : FOLLOWERS2_FK                                        */
+/*==============================================================*/
+create  index FOLLOWERS2_FK on FOLLOWERS (
+FOLLOWERSID
+);
+
+/*==============================================================*/
 /* Table : FOLLOWING                                            */
 /*==============================================================*/
 create table FOLLOWING (
-   YUSERID               INT4                 not null,
+   YUSERID              INT4                 not null,
    FOLLOWINGID          INT4                 not null,
    constraint PK_FOLLOWING primary key (YUSERID, FOLLOWINGID)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*==============================================================*/
+/* Index : FOLLOWING_PK                                         */
+/*==============================================================*/
+create unique index FOLLOWING_PK on FOLLOWING (
+YUSERID,
+FOLLOWINGID
+);
+
+/*==============================================================*/
+/* Index : FOLLOWING_FK                                         */
+/*==============================================================*/
+create  index FOLLOWING_FK on FOLLOWING (
+YUSERID
+);
+
+/*==============================================================*/
+/* Index : FOLLOWING2_FK                                        */
+/*==============================================================*/
+create  index FOLLOWING2_FK on FOLLOWING (
+FOLLOWINGID
+);
 
 /*==============================================================*/
 /* Table : LIKED                                                */
 /*==============================================================*/
 create table LIKED (
    POSTID               INT4                 not null,
-   YUSERID               INT4                 not null,
+   YUSERID              INT4                 not null,
    constraint PK_LIKED primary key (POSTID, YUSERID)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*==============================================================*/
+/* Index : LIKED_PK                                             */
+/*==============================================================*/
+create unique index LIKED_PK on LIKED (
+POSTID,
+YUSERID
+);
+
+/*==============================================================*/
+/* Index : LIKED_FK                                             */
+/*==============================================================*/
+create  index LIKED_FK on LIKED (
+POSTID
+);
+
+/*==============================================================*/
+/* Index : LIKED2_FK                                            */
+/*==============================================================*/
+create  index LIKED2_FK on LIKED (
+YUSERID
+);
 
 /*==============================================================*/
 /* Table : MEDIA                                                */
@@ -72,114 +206,141 @@ create table MEDIA (
    MEDIAID              SERIAL               not null,
    COMMENTID            INT4                 null,
    POSTID               INT4                 null,
-   YUSERID               INT4                 null,
+   YUSERID              INT4                 null,
    MEDIACONTENT         VARCHAR(500)         null,
    constraint PK_MEDIA primary key (MEDIAID)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*==============================================================*/
-/* Table : POST                                                 */
+/* Index : MEDIA_PK                                             */
 /*==============================================================*/
-create table POST (
-   POSTID               SERIAL               not null,
-   YUSERID               INT4                 not null,
-   POSTDATE             DATE                 null,
-   POSTDESCRIPTION      VARCHAR(280)         null,
-   constraint PK_POST primary key (POSTID)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+create unique index MEDIA_PK on MEDIA (
+MEDIAID
+);
+
+/*==============================================================*/
+/* Index : PROFILPICTURE_FK                                     */
+/*==============================================================*/
+create  index PROFILPICTURE_FK on MEDIA (
+YUSERID
+);
+
+/*==============================================================*/
+/* Index : MEDIAPOST_FK                                         */
+/*==============================================================*/
+create  index MEDIAPOST_FK on MEDIA (
+POSTID
+);
+
+/*==============================================================*/
+/* Index : MEDIACOMMENT_FK                                      */
+/*==============================================================*/
+create  index MEDIACOMMENT_FK on MEDIA (
+COMMENTID
+);
+
 
 /*==============================================================*/
 /* Table : SAVED                                                */
 /*==============================================================*/
 create table SAVED (
-   YUSERID               INT4                 not null,
+   YUSERID              INT4                 not null,
    POSTID               INT4                 not null,
    constraint PK_SAVED primary key (YUSERID, POSTID)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*==============================================================*/
-/* Table : YUSER                                               */
+/* Index : SAVED_PK                                             */
 /*==============================================================*/
-create table YUSER (
-   YUSERID               SERIAL               not null,
-   YUSERPSEUDO           VARCHAR(30)          null,
-   YUSERNAME             VARCHAR(30)          null,
-   YUSERBIRTHDAY         DATE                 null,
-   YUSERPASSWORD         VARCHAR(50)          null,
-   YUSERROLE             VARCHAR(20)          null,
-   YUSERPREMIUM          BOOL                 null,
-   constraint PK_YUSER primary key (YUSERID)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+create unique index SAVED_PK on SAVED (
+YUSERID,
+POSTID
+);
 
-alter table COMMENT
-   add constraint FK_COMMENT_POSTCOMME_POST foreign key (POSTID)
-      references POST (POSTID)
-      on delete restrict on update restrict;
+/*==============================================================*/
+/* Index : SAVED_FK                                             */
+/*==============================================================*/
+create  index SAVED_FK on SAVED (
+YUSERID
+);
 
-alter table COMMENT
-   add constraint FK_COMMENT_YUSERCOMME_YUSER foreign key (YUSERID)
-      references YUSER (YUSERID)
-      on delete restrict on update restrict;
+/*==============================================================*/
+/* Index : SAVED2_FK                                            */
+/*==============================================================*/
+create  index SAVED2_FK on SAVED (
+POSTID
+);
 
-alter table FOLLOWERS
-   add constraint FK_FOLLOWER_FOLLOWERS_YUSER foreign key (YUSERID)
-      references YUSER (YUSERID)
-      on delete restrict on update restrict;
 
-alter table FOLLOWERS
-   add constraint FK_FOLLOWER_FOLLOWERS_YUSER2 foreign key (FOLLOWERSID)
-      references YUSER (YUSERID)
-      on delete restrict on update restrict;
+-- alter table COMMENT
+--    add constraint FK_COMMENT_POSTCOMME_POST foreign key (POSTID)
+--       references POST (POSTID)
+--       on delete restrict on update restrict;
 
-alter table FOLLOWING
-   add constraint FK_FOLLOWIN_FOLLOWING_YUSER foreign key (YUSERID)
-      references YUSER (YUSERID)
-      on delete restrict on update restrict;
+-- alter table COMMENT
+--    add constraint FK_COMMENT_USERCOMME_YUSER foreign key (YUSERID)
+--       references YUSER (YUSERID)
+--       on delete restrict on update restrict;
 
-alter table FOLLOWING
-   add constraint FK_FOLLOWIN_FOLLOWING_YUSER2 foreign key (FOLLOWINGID)
-      references YUSER (YUSERID)
-      on delete restrict on update restrict;
+-- alter table FOLLOWERS
+--    add constraint FK_FOLLOWER_FOLLOWERS_YUSER foreign key (YUSERID)
+--       references YUSER (YUSERID)
+--       on delete restrict on update restrict;
 
-alter table LIKED
-   add constraint FK_LIKED_LIKED_POST foreign key (POSTID)
-      references POST (POSTID)
-      on delete restrict on update restrict;
+-- alter table FOLLOWERS
+--    add constraint FK_FOLLOWER_FOLLOWERS_USER2 foreign key (FOLLOWERSID)
+--       references YUSER (YUSERID)
+--       on delete restrict on update restrict;
 
-alter table LIKED
-   add constraint FK_LIKED_LIKED2_YUSER foreign key (YUSERID)
-      references YUSER (YUSERID)
-      on delete restrict on update restrict;
+-- alter table FOLLOWING
+--    add constraint FK_FOLLOWIN_FOLLOWING_YUSER foreign key (YUSERID)
+--       references YUSER (YUSERID)
+--       on delete restrict on update restrict;
 
-alter table MEDIA
-   add constraint FK_MEDIA_MEDIACOMM_COMMENT foreign key (COMMENTID)
-      references COMMENT (COMMENTID)
-      on delete restrict on update restrict;
+-- alter table FOLLOWING
+--    add constraint FK_FOLLOWIN_FOLLOWING_USER2 foreign key (FOLLOWINGID)
+--       references YUSER (YUSERID)
+--       on delete restrict on update restrict;
 
-alter table MEDIA
-   add constraint FK_MEDIA_MEDIAPOST_POST foreign key (POSTID)
-      references POST (POSTID)
-      on delete restrict on update restrict;
+-- alter table LIKED
+--    add constraint FK_LIKED_LIKED_POST foreign key (POSTID)
+--       references POST (POSTID)
+--       on delete restrict on update restrict;
 
-alter table MEDIA
-   add constraint FK_MEDIA_PROFILPIC_YUSER foreign key (YUSERID)
-      references YUSER (YUSERID)
-      on delete restrict on update restrict;
+-- alter table LIKED
+--    add constraint FK_LIKED_LIKED2_YUSER foreign key (YUSERID)
+--       references YUSER (YUSERID)
+--       on delete restrict on update restrict;
 
-alter table POST
-   add constraint FK_POST_POSTED_YUSER foreign key (YUSERID)
-      references YUSER (YUSERID)
-      on delete restrict on update restrict;
+-- alter table MEDIA
+--    add constraint FK_MEDIA_MEDIACOMM_COMMENT foreign key (COMMENTID)
+--       references COMMENT (COMMENTID)
+--       on delete restrict on update restrict;
 
-alter table SAVED
-   add constraint FK_SAVED_SAVED_YUSER foreign key (YUSERID)
-      references YUSER (YUSERID)
-      on delete restrict on update restrict;
+-- alter table MEDIA
+--    add constraint FK_MEDIA_MEDIAPOST_POST foreign key (POSTID)
+--       references POST (POSTID)
+--       on delete restrict on update restrict;
 
-alter table SAVED
-   add constraint FK_SAVED_SAVED2_POST foreign key (POSTID)
-      references POST (POSTID)
-      on delete restrict on update restrict;
+-- alter table MEDIA
+--    add constraint FK_MEDIA_PROFILPIC_YUSER foreign key (YUSERID)
+--       references YUSER (YUSERID)
+--       on delete restrict on update restrict;
+
+-- alter table POST
+--    add constraint FK_POST_POSTED_YUSER foreign key (YUSERID)
+--       references YUSER (YUSERID)
+--       on delete restrict on update restrict;
+
+-- alter table SAVED
+--    add constraint FK_SAVED_SAVED_YUSER foreign key (YUSERID)
+--       references YUSER (YUSERID)
+--       on delete restrict on update restrict;
+
+-- alter table SAVED
+--    add constraint FK_SAVED_SAVED2_POST foreign key (POSTID)
+--       references POST (POSTID)
+--       on delete restrict on update restrict;
 
 
 insert into YUSER (YUSERID, YUSERPSEUDO, YUSERNAME, YUSERBIRTHDAY, YUSERPASSWORD, YUSERROLE, YUSERPREMIUM) values (1, 'Shiro', 'Shiro_1234', '2003-03-8', ' 6T840VLM3QGB2AU8Y3A KHTTRNBRQ', 'YUSER', true);
@@ -387,7 +548,4 @@ insert into FOLLOWING (YUSERID, FOLLOWINGID) values (5, 1);
 insert into FOLLOWING (YUSERID, FOLLOWINGID) values (5, 2);
 
 insert into FOLLOWING (YUSERID, FOLLOWINGID) values (5, 3);
-
-
-
 
