@@ -8,31 +8,18 @@ import Start from '@/components/Start.vue'
 </script>
 
 <template>
-  
-    <div class="signupAndLogo">
-      <div>
-        <img src="@/assets/ylogo.png" alt="Y logo">
-    
-      </div>
-  
-      <div>
-        
-          <h1>Ça se passe maintenant!</h1>
-    
-          <h2>Inscrivez vous.</h2>
-          <!-- <RouterLink to="/signup">Créer un compte</RouterLink> -->
-          <button class="btnSignUp"><RouterLink to="/signup">Créer un compte</RouterLink></button>
-          <h2>Vous avez déjà un compte ?</h2>
-          <!-- <RouterLink to="/login">Se connecter</RouterLink> -->
-          <button class="btnSignIn"><RouterLink to="/login">Se connecter</RouterLink></button>
-
-        
-      </div>
-
+  <div class="startPage">
+    <div class="leftColumn">
+      <img src="@/assets/ylogo.png" alt="Y logo">
+      <h1>Ça se passe maintenant!</h1>
     </div>
-
-
-
+    <div class="rightColumn">
+      <h2>Inscrivez vous.</h2>
+      <RouterLink to="/signup"><button class="btnSignUp">Créer un compte</button></RouterLink>
+      <h2>Vous avez déjà un compte ?</h2>
+      <RouterLink to="/login"><button class="btnSignIn">Se connecter</button></RouterLink>
+    </div>
+  </div>
   <RouterView />
 </template>
 
@@ -50,11 +37,10 @@ import Start from '@/components/Start.vue'
 
 }
 
-a {
+a{
   text-decoration: none;
-  color: black;
+  color: inherit;
 }
-
 
 .startPage {
   display: flex;
