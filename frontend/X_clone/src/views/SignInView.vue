@@ -1,8 +1,9 @@
 <script setup>
 
 import { RouterLink } from 'vue-router';
+import { ref, computed, reactive } from 'vue'
 import axios from 'axios';
-import user from '@/components/user';
+import user from '@/stores/users';
 
 // Définissez les variables réactives pour le login et le mot de passe
 const authlogin = ref('');
@@ -11,10 +12,15 @@ const authpasswd = ref('');
 // Définissez la méthode login pour envoyer une requête POST au serveur
 const login = async () => {
   try {
+    console.log(authlogin.value, authpasswd.value); // Juste pour déboguer
     const response = await axios.post('http://localhost:30001/login', {
-      login: authlogin.value,
-      password: authpasswd.value,
-    });
+      YUSERNAME: authlogin.value,
+      YUSERPASSWORD: authpasswd.value,
+    }, {
+          headers: {
+          'Content-Type': 'application/json'
+        }
+    });;
     // Mettre à jour le magasin avec les données de l'utilisateur
     store.setUser(response.data.user);
     console.log(store.user); // Affiche les données de l'utilisateur stockées globalement
