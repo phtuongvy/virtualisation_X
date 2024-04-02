@@ -19,8 +19,13 @@
         <button type="submit">Tweet</button>
       </form>
 
+      <!-- users tweets part -->
+
       <div v-for="tweet in tweets" :key="tweet.POSTID" class="tweet" v-if="users.length && media.length">
+
+        <!-- tweets' info -->
         <div class="tweet-header">
+
           <img :src="getUserAvatar(tweet.YUSERID)" alt="User avatar" class="avatar">
           <div class="user-info">
             <h3>{{ getUserInfo(tweet.YUSERID).YUSERPSEUDO }}</h3>
@@ -28,17 +33,33 @@
             <p class="tweet-date">{{ formatDate(tweet.POSTDATE) }}</p>
           </div>
         </div>
+
         <p class="tweet-content">{{ tweet.POSTDESCRIPTION }}</p>
+
         <div class="tweet-footer">
+
           <button @click="likeTweet(tweet)" class="like-button">
             {{ getLikes(tweet) }} <img width="50" height="50" src="https://img.icons8.com/ios-glyphs/30/like--v1.png"
               alt="like--v1" />
           </button>
+
           <button @click="save(tweet)" class="save-button">
             <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/bookmark-ribbon.png"
               alt="bookmark-ribbon" /> Enregistrer
           </button>
+
         </div>
+
+        <!-- Comments part -->
+        <div class="comments">
+          <div v-for="comment in getComments(tweet)" :key="comment.COMMENTID" class="comment">
+            <img :src="comment.userAvatar" alt="User avatar" class="avatar">
+            <p>{{ comment.COMMENTTEXT }}</p>
+            <p>@{{ comment.userInfo.YUSERPSEUDO }}</p>
+          </div>
+        </div>
+
+
       </div>
     </div>
 
@@ -76,27 +97,33 @@ export default {
       users: [],
       media: [],
       liked: [],
-      newTweet: ''
+      comments: [],
+      newTweet: '',
+      newComments: ''
     };
   },
   created() {
     Promise.all([
-      axios.get('http://localhost:30001/posts'),
-      axios.get('http://localhost:30001/users'),
-      axios.get('http://localhost:30001/media'),
-      axios.get('http://localhost:30001/liked')
+      axios.get('http://localhost:30001/posts'), // get posts
+      axios.get('http://localhost:30001/users'), // get users
+      axios.get('http://localhost:30001/comment'), // get comments
+      axios.get('http://localhost:30001/media'), // get media
+      axios.get('http://localhost:30001/liked') // get tweets liked
     ])
-      .then(([postsResponse, usersResponse, mediaResponse, likedResponse]) => {
+      .then(([postsResponse, usersResponse, mediaResponse, likedResponse, commentsResponse]) => {
         this.tweets = postsResponse.data;
         this.users = usersResponse.data;
         this.media = mediaResponse.data;
         this.liked = likedResponse.data;
+        this.comments = commentsResponse.data;
       })
       .catch(error => {
         console.error(error);
       });
   },
   methods: {
+
+    // Like tweet
     likeTweet(tweet) {
       console.log(tweet);
       const userid = tweet.YUSERID;
@@ -113,6 +140,8 @@ export default {
           console.error(error);
         });
     },
+
+    // Save tweet
     save(tweet) {
       axios.post(`http://localhost:30001/posts/${tweet.YUSERID}/save`, { YUSERID: tweet.YUSERID, POSTID: tweet.POSTID })
         .then(response => {
@@ -126,6 +155,8 @@ export default {
           console.error(error);
         });
     },
+
+    // post tweet
     postTweet() {
       const url = 'http://localhost:30001/posts/';
       let newTweet = {
@@ -137,12 +168,13 @@ export default {
       axios.post(url, newTweet)
         .then(response => {
           this.tweets.splice(0, 0, newTweet)
-          this.newTweet = ''; // Clear the textarea
+          this.newTweet = '';
         })
         .catch(error => {
           console.error(error);
         });
     },
+
     getUserAvatar(userId) {
       const userMedia = this.media.find(media => media.YUSERID === userId);
       return userMedia ? userMedia.MEDIACONTENT : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg';
@@ -153,10 +185,23 @@ export default {
     getLikes(tweet) {
       return this.liked.filter(like => like.POSTID === tweet.POSTID).length;
     },
+    getComments(tweet) {
+      return this.comments
+        .filter(comment => comment.POSTID === tweet.POSTID)
+        .map(comment => {
+          const userInfo = this.getUserInfo(comment.YUSERID);
+          const userAvatar = this.getUserAvatar(comment.YUSERID);
+          return {
+            ...comment,
+            userInfo,
+            userAvatar: userAvatar ? userAvatar : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg'
+          };
+        });
+    },
     formatDate(timestamp) {
       const date = new Date(timestamp);
       return date.toLocaleString();
-    },
+    }
   }
 };
 </script>
@@ -324,6 +369,41 @@ export default {
 .tweet-content {
   word-wrap: break-word;
   overflow-wrap: break-word;
+}
+
+/* Comments style */
+
+.comments {
+  padding: 10px 0;
+  border-top: 1px solid #e6ecf0;
+}
+
+.comment {
+  display: flex;
+  align-items: start;
+  margin-bottom: 10px;
+}
+
+.comment p {
+  margin: 0;
+}
+
+.comment p:first-child {
+  font-size: 15px;
+  color: #14171a;
+  margin-right: 10px;
+}
+
+.comment p:last-child {
+  font-size: 14px;
+  color: #657786;
+}
+
+.comment .avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 
 /* like, save buton style */
