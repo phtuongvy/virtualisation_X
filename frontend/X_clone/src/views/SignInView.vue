@@ -1,41 +1,39 @@
 <script setup>
-import { ref, computed, reactive } from 'vue'
-import { useUsersStore } from '@/stores/users';
 
-const users = useUsersStore()
+import { RouterLink } from 'vue-router';
+import axios from 'axios';
+import user from '@/components/user';
 
-const authlogin = ref("")
-const authpasswd = ref("") 
+// Définissez les variables réactives pour le login et le mot de passe
+const authlogin = ref('');
+const authpasswd = ref('');
 
-function login() {
-    users.login({ 
-        login: authlogin.value, 
-        password: authpasswd.value
-   })
-    console.log(authpasswd)
-}
+// Définissez la méthode login pour envoyer une requête POST au serveur
+const login = async () => {
+  try {
+    const response = await axios.post('http://localhost:30001/login', {
+      login: authlogin.value,
+      password: authpasswd.value,
+    });
+    // Mettre à jour le magasin avec les données de l'utilisateur
+    store.setUser(response.data.user);
+    console.log(store.user); // Affiche les données de l'utilisateur stockées globalement
+  } catch (error) {
+    console.error("Erreur lors de la connexion : ", error);
+  }
+};
+
  
 </script>
 
 
 <template>
 
-<div id="auth"> 
-
-       
-<input v-model="authlogin">
-<input v-model="authpasswd">
-
-<button @click="login">Connecter</button>
-
-
-<!-- <div id="logout" v-if="users.user">
-  <button @click="logout">Déconnecter</button>
-</div> -->
-
-
-
-</div>
+  <div id="auth">
+    <input v-model="authlogin" type="email" placeholder="Login">
+    <input v-model="authpasswd" type="password" placeholder="Mot de passe">
+    <button @click="login">Connecter</button>
+  </div>
     
 </template>
 
