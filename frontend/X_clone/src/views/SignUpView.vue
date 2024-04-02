@@ -1,22 +1,3 @@
-<template>
-    <div class="cardSignUp" v-if="showCard">
-        <div class="card-header">
-            <h1>Créer votre compte</h1>
-            <button class="close-button" @click="closeCard">X</button>
-        </div>
-        <div class="card-body">
-            <label for="name">Nom et prénom :</label>
-            <input type="name" id="name" v-model="name" required>
-            <label for="username">Nom d'utilisateur :</label>
-            <input type="username" id="username" v-model="username" required>
-            <label for="password">Mot de passe :</label>
-            <input type="password" id="password" v-model="password" required>
-            <button type="submit" @click="signUp">Suivant</button>
-            <p class="error-message">{{ errorMessage }}</p>
-        </div>
-    </div>
-</template>
-
 <script>
 
 import axios from 'axios';
@@ -63,61 +44,102 @@ export default {
 };
 </script>
 
+
+<template>
+      <div class="startPage" v-if="showCard">
+        <div class="leftColumn">
+            <img src="@/assets/ylogo.png" alt="Y logo">
+            <h1>Ça se passe maintenant!</h1>
+        </div>
+
+        <div class="rightColumn">
+            <div class="form-group">
+                <label for="name">Nom et prénom :</label>
+                <input type="text" id="name" v-model="userPseudo" required>
+            </div>
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur :</label>
+                <input type="text" id="username" v-model="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" v-model="password" required>
+            </div>
+            <button type="submit" @click="signUp">Suivant</button>
+            <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
+        </div>
+    </div>
+</template>
+
+
+
 <style scoped>
-.cardSignUp {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin: 0 auto;
-    background-color: black;
-    color: white;
+  @font-face {
+    font-family: 'ChirpExtendedHeavy';
+    src: url('@/assets/fonts/ChirpExtendedHeavy.ttf') format('truetype');
 }
 
-.card-header {
+* {
+    font-family: 'ChirpExtendedHeavy', sans-serif;
+    color: black; /* Mettre la couleur de texte en noir */
+}
+
+.startPage {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    padding: 50px;
+    height: auto; /* Ajustement pour assurer la hauteur auto */
 }
 
-.close-button {
-    background-color: transparent;
-    color: white;
-    border: none;
-    cursor: pointer;
+.leftColumn, .rightColumn {
+    flex: 1;
 }
 
-.card-body {
+.rightColumn {
     display: flex;
     flex-direction: column;
 }
 
-input[type="username"],
-input[type="password"] {
-    margin-bottom: 8px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.form-group {
+    margin-bottom: 20px;
 }
 
-button[type="submit"] {
-    padding: 8px 16px;
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-button[type="submit"]:hover {
-    background-color: rgb(79, 78, 78);
-}
-
-.close-button:hover {
-    background-color: rgb(79, 78, 78);
-    border-radius: 50%;
+input[type="text"], input[type="password"] {
+    width: 100%;
     padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px; /* Bordures plus subtiles */
+    border: 1px solid #ddd; /* Bordure légère */
+    box-sizing: border-box; /* Pour inclure padding dans la largeur */
+}
+
+button {
+    padding: 15px;
+    margin: 10px 0;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Transition plus douce */
+    background-color: #1DA1F2;
+    color: white;
+    border: none;
+}
+
+button:hover {
+    background-color: #117dbb; /* Un bleu plus foncé au survol */
+}
+
+.error-message {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+img {
+    width: 265px;
+    height: 239px;
+    margin-bottom: 20px;
 }
 </style>

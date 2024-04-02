@@ -39,11 +39,19 @@ const login = async () => {
 
 <template>
 
-  <div id="auth">
-    <div v-show="errorMessage">{{ errorMessage }}</div>
-    <input v-model="authlogin" type="email" placeholder="Login">
-    <input v-model="authpasswd" type="password" placeholder="Mot de passe">
-    <button @click="login">Connecter</button>
+  <div class="startPage">
+    <div class="leftColumn">
+      <img src="@/assets/ylogo.png" alt="Y logo">
+      <h1>Ça se passe maintenant!</h1>
+    </div>
+    <div class="rightColumn">
+      <div class="error-message" v-show="errorMessage">{{ errorMessage }}</div>
+      <label for="password">Login :</label>
+      <input v-model="authlogin" type="email" >
+      <label for="password">Mot de passe :</label>
+      <input v-model="authpasswd" type="password" >
+      <button @click="login">Connecter</button>
+    </div>
   </div>
     
 </template>
@@ -51,55 +59,65 @@ const login = async () => {
 
 
 <style scoped>
+  @font-face {
+    font-family: 'ChirpExtendedHeavy';
+    src: url('@/assets/fonts/ChirpExtendedHeavy.ttf') format('truetype');
+  }
 
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f8fa;
-      color: #14171a;
-      display: flex;
-      justify-content: center; /* Centre horizontalement */
-      align-items: center; /* Centre verticalement */
-      height: 100vh; /* S'assure que le body prend toute la hauteur de la fenêtre */
-      margin: 0;
-    }
+  * {
+    font-family: 'ChirpExtendedHeavy', sans-serif;
+    color: black; /* Mettre la couleur de texte en noir */
+  }
 
-    #auth {
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      padding: 20px;
-      width: 300px;
-    }
+  .startPage {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px;
+    height: auto; /* ajustement pour assurer la hauteur auto */
+  }
 
-    #login {
-      display: flex;
-      flex-direction: column;
-    }
+  .leftColumn, .rightColumn {
+    flex: 1;
+  }
 
-    input[v-model="authlogin"],
-    input[v-model="authpasswd"] {
-      border: 1px solid #ccd6dd;
-      border-radius: 4px;
-      padding: 10px;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
+  input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px; /* Bordures plus subtiles */
+    border: 1px solid #ddd; /* Bordure légère */
+    box-sizing: border-box; /* Pour inclure padding dans la largeur */
+  }
 
-    button {
-      background-color: #1da1f2;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      padding: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-    }
+  button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Transition plus douce */
+    border: none;
+    background-color: #1DA1F2;
+    color: white;
+  }
 
-    button:hover {
-      background-color: #1991db;
-    }
+  button:hover {
+    background-color: #117dbb; /* Un bleu plus foncé au survol */
+  }
 
+  .error-message {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    padding: 10px;
+    border-radius: 5px;
+}
 
-
+  img {
+    width: 265px;
+    height: 239px;
+    margin-bottom: 20px;
+  }
 </style>
