@@ -20,7 +20,7 @@ const login = async () => {
         'Content-Type': 'application/json'
       }
     });
-    userStore.setUser(response.data.user);
+    userStore.setUser(response.data);
     console.log(userStore.user); // Affiche les données de l'utilisateur
   } catch (error) {
     if (error.response && error.response.status === 404) {
