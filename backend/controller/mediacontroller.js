@@ -1,9 +1,8 @@
-// authController.js
-
+// Charge le module MySQL pour Node.js
 var mysql = require('mysql');
 
-// Options de connexion à la base de données MySQL
-// Vous pouvez déplacer ces options dans un fichier de configuration séparé pour améliorer la modularité
+// Définit les options de connexion à la base de données MySQL
+// Utilise les variables d'environnement si disponibles, sinon utilise les valeurs par défaut
 var connectionOptions = {
     host: process.env.MYSQL_HOST || 'localhost',
     port: process.env.MYSQL_PORT || '3306',
@@ -13,7 +12,7 @@ var connectionOptions = {
 };
 
 
-
+// Fonction pour récupérer les media de la base de données
 function getMedia(req, res) {
     var connection = mysql.createConnection(connectionOptions);
    var queryStr = 'SELECT * FROM `MEDIA` ORDER BY `MEDIAID` DESC';
@@ -40,5 +39,5 @@ function getMedia(req, res) {
 }
 
 
-
+// Exporte les fonctions pour qu'elles puissent être utilisées dans d'autres fichiers du projet
 module.exports = { getMedia };

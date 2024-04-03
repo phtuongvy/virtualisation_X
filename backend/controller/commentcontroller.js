@@ -1,9 +1,8 @@
-// authController.js
-
+// Charge le module MySQL pour Node.js
 var mysql = require('mysql');
 
-// Options de connexion à la base de données MySQL
-// Vous pouvez déplacer ces options dans un fichier de configuration séparé pour améliorer la modularité
+// Définit les options de connexion à la base de données MySQL
+// Utilise les variables d'environnement si disponibles, sinon utilise les valeurs par défaut
 var connectionOptions = {
     host: process.env.MYSQL_HOST || 'localhost',
     port: process.env.MYSQL_PORT || '3306',
@@ -12,7 +11,7 @@ var connectionOptions = {
     database: process.env.MYSQL_DB || 'x_database'
 };
 
-// Fonction de connexion
+// Fonction pour ajouter un commentaire à la base de données
 function postsComment(req, res) {
     var connection = mysql.createConnection(connectionOptions);
     var queryStr = 'INSERT INTO `COMMENT` (`COMMENTID`, `POSTID`, `YUSERID`, `COMMENTDATE`, `COMMENTTEXT`) VALUES (?, ?, ?, ?, ?)';
@@ -32,6 +31,7 @@ function postsComment(req, res) {
    connection.end();
 }
 
+// Fonction pour récupérer les Comments de la base de données
 function getComment(req, res) {
     
    var connection = mysql.createConnection(connectionOptions);
@@ -52,13 +52,12 @@ function getComment(req, res) {
          return;
       }
 
-      // Transforme les résultats en un format plus lisible / structuré si nécessaire
-      // Cela est juste un exemple, vous pouvez choisir de renvoyer `results` directement
+
       res.status(200).json(results);
    });
 
    connection.end();
 }
 
-
+// Exporte les fonctions pour qu'elles puissent être utilisées dans d'autres fichiers du projet
 module.exports = { postsComment, getComment };

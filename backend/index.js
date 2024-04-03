@@ -6,18 +6,19 @@ const express = require('express');
 // Initialisation d'Express
 const app = express();
 
-app.use(express.json()); // for parsing application/json
+app.use(express.json()); // Permet de parser les requêtes en JSON. C'est un middleware pour Express.
 
-const YuserController = require('./controller/yusercontroller'); // Assurez-vous que le chemin est correct
-const PostController = require('./controller/postcontroller'); // Assurez-vous que le chemin est correct
-const LikedController = require('./controller/likedcontroller'); // Assurez-vous que le chemin est correct
-const SavedController = require('./controller/savedcontroller'); // Assurez-vous que le chemin est correct
-const CommentController = require('./controller/commentcontroller'); // Assurez-vous que le chemin est correct
-const FollowerController = require('./controller/followerscontroller'); // Assurez-vous que le chemin est correct
-const FollowingController = require('./controller/followingcontroller'); // Assurez-vous que le chemin est correct
-const MediaController = require('./controller/mediacontroller'); // Assurez-vous que le chemin est correct
+// Importation des contrôleurs. 
+const YuserController = require('./controller/yusercontroller'); 
+const PostController = require('./controller/postcontroller'); 
+const LikedController = require('./controller/likedcontroller'); 
+const SavedController = require('./controller/savedcontroller'); 
+const CommentController = require('./controller/commentcontroller'); 
+const FollowerController = require('./controller/followerscontroller'); 
+const FollowingController = require('./controller/followingcontroller'); 
+const MediaController = require('./controller/mediacontroller'); 
 
-// for CORS error
+// Configuration pour éviter les erreurs CORS en autorisant les requêtes de n'importe quelle origine.
 app.use((req, res, next) => {
    res.header('Access-Control-Allow-Origin', '*');
    res.header('Access-Control-Allow-Credentials', true);
@@ -26,18 +27,18 @@ app.use((req, res, next) => {
    next();
 });
 
-// Définition du port sur lequel le serveur va écouter. Utilise une variable d'environnement ou un port par défaut.
-var port = process.env.PORT || 8005;
+// Définition du port.
+const port = process.env.PORT || 8005;
 
-// Chaîne de connexion pour la base de données MySQL
-var mysqlHost = process.env.MYSQL_HOST || 'localhost';
-var mysqlPort = process.env.MYSQL_PORT || '3306';
-var mysqlUser = process.env.MYSQL_USER || 'root';
-var mysqlPass = process.env.MYSQL_PASS || 'root';
-var mysqlDB = process.env.MYSQL_DB || 'x_database';
+// Paramètres de connexion à la base de données MySQL. 
+const mysqlHost = process.env.MYSQL_HOST || 'localhost';
+const mysqlPort = process.env.MYSQL_PORT || '3306';
+const mysqlUser = process.env.MYSQL_USER || 'root';
+const mysqlPass = process.env.MYSQL_PASS || 'root';
+const mysqlDB = process.env.MYSQL_DB || 'x_database';
 
 // Options de connexion à la base de données MySQL
-var connectionOptions = {
+const  connectionOptions = {
    host: mysqlHost,
    port: mysqlPort,
    user: mysqlUser,
@@ -45,47 +46,45 @@ var connectionOptions = {
    database: mysqlDB
 };
 
-// Route racine qui envoie le fichier index.html au client
+// Route racine envoyant le fichier index.html.
 app.get('/', (req, res) => {
    res.sendFile(__dirname + '/index.html');
 });
 
+//------------------------------------------------------------//
+//--------------Création des différentes routes --------------//
+//------------------------------------------------------------//
 
 
-// start page functionnalities
+// Routes pour la gestion des utilisateurs
+app.post('/login', YuserController.login); // Authentification d'un utilisateur
+app.post('/register', YuserController.register); // Enregistrement d'un nouvel utilisateur
+app.get('/users', YuserController.getyuser); // Récupération de la liste des utilisateurs
 
-app.post('/login', YuserController.login);
+// Routes pour la gestion des posts
+app.post('/posts', PostController.posts); // Création d'un nouveau post
+app.get('/posts', PostController.getPost); // Récupération des posts
 
-app.post('/register',YuserController.register);
+// Routes pour la gestion des likes
+app.post('/posts/:postid/like', LikedController.postsLiked); // Ajout d'un like à un post
+app.get('/liked', LikedController.getLiked); // Récupération des posts likés
 
-// home functionnalities
+// Routes pour la gestion des sauvegardes
+app.post('/posts/:postid/save', SavedController.postsSaved); // Sauvegarde d'un post
+app.get('/saved', SavedController.getSaved); // Récupération des posts sauvegardés
 
-app.post('/posts',PostController.posts);
+// Routes pour la gestion des commentaires
+app.post('/posts/:postid/comment', CommentController.postsComment); // Ajout d'un commentaire à un post
+app.get('/comment', CommentController.getComment); // Récupération des commentaires
 
-app.post('/posts/:postid/like',LikedController.postsLiked);
+// Routes pour la gestion des abonnés
+app.get('/followers', FollowerController.getFollowers); // Récupération des followers d'un utilisateur
+app.get('/following', FollowingController.getFollowing); // Récupération des utilisateurs suivis
+
+// Route pour la gestion des médias
+app.get('/media', MediaController.getMedia); // Récupération des médias associés aux posts
 
 
-app.post('/posts/:yuserid/save', SavedController.postsSaved);
-
-
-app.post('/posts/:yuserid/comment', CommentController.postsComment);
-
-app.get('/comment', CommentController.getComment);
-
-
-app.get('/followers',FollowerController.getFollowers);
-
-app.get('/following',FollowingController.getFollowing);
-
-app.get('/liked', LikedController.getLiked);
-
-app.get('/media', MediaController.getMedia);
-
-app.get('/posts', PostController.getPost);
-
-app.get('/saved', SavedController.getSaved);
-
-app.get('/users', YuserController.getyuser);
 
 // Démarrage du serveur sur le port spécifié
 app.listen(port, function () {
