@@ -223,8 +223,8 @@ export default {
       let newComment = {
         YUSERID: this.yuserId,
         POSTID: tweetId,
-        POSTDATE: Date.now(),
-        POSTDESCRIPTION: this.newTweet
+        COMMENTDATE: Date.now(),
+        COMMENTTEXT: this.newComment
       }
 
       axios.post(`http://localhost:30001/posts/${this.yuserId}/comment`, newComment)
