@@ -54,17 +54,18 @@
         <div class="comments">
 
           <div id="form-comment">
-            <textarea v-model="newComments" placeholder="Poster votre commentaire"></textarea>
-            <button type="submit">Commenter</button>
+            <textarea v-model="newComment" placeholder="Poster votre commentaire"></textarea>
+            <button type="submit" @click="postComment">Commenter</button>
           </div>
 
           <div v-for="comment in getComments(tweet)" :key="comment.COMMENTID" class="comment">
-            <img :src="comment.userAvatar" alt="User avatar" class="avatar">
-            <p>{{ comment.userInfo.YUSERPSEUDO }}</p>
-            <p>@{{ comment.userInfo.YUSERNAME }}</p>
+            <div>
+              <img :src="comment.userAvatar" alt="User avatar" class="avatar">
+              <p>{{ comment.userInfo.YUSERPSEUDO }}</p>
+              <p>@{{ comment.userInfo.YUSERNAME }}</p>
+            </div>
             <p class="comment-text">{{ comment.COMMENTTEXT }}</p>
           </div>
-
 
         </div>
 
@@ -168,47 +169,54 @@ export default {
 
     // post tweet
     postTweet() {
-      const url = 'http://localhost:30001/posts/';
-      const userStore = useUserStore();
-      const userId = userStore.user.YUSERID;
-      let newTweet = {
-        YUSERID: userId000,
-        POSTDATE: Date.now(),
-        POSTDESCRIPTION: this.newTweet
-      }
 
-      axios.post(url, newTweet)
-        .then(response => {
-          this.tweets.splice(0, 0, newTweet)
-          this.newTweet = '';
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      this.$nextTick(() => {
+        const url = 'http://localhost:30001/posts/';
+        const userStore = useUserStore();
+        const userId = userStore.user.YUSERID;
+        console.log(userId);
+        let newTweet = {
+          YUSERID: userId,
+          POSTDATE: Date.now(),
+          POSTDESCRIPTION: this.newTweet
+        }
+  
+        axios.post(url, newTweet)
+          .then(response => {
+            this.tweets.splice(0, 0, newTweet)
+            this.newTweet = '';
+          })
+          .catch(error => {
+            console.error(error);
+          });
+
+      });
     },
 
     // post comment
     postComment() {
-      const userStore = useUserStore();
-      const userId = userStore.user.YUSERID;
-      const postId = userStore.user.POSTID;
-      console.log(userId, postId);
+      this.$nextTick(() => {
+        const userStore = useUserStore();
+        const userId = userStore.user.YUSERID;
+        const postId = userStore.user.POSTID;
+        console.log(userId, postId);
 
-      let newComment = {
-        YUSERID: userId,
-        POSTID: postId,
-        COMMENTDATE: Date.now(),
-        COMMENTTEXT: this.newComment
-      }
+        let newComment = {
+          YUSERID: userId,
+          POSTID: postId,
+          COMMENTDATE: Date.now(),
+          COMMENTTEXT: this.newComment
+        }
 
-      axios.post('http://localhost:30001/posts/${userId}/comment', newComment)
-        .then(response => {
-          this.comments.splice(0, 0, newComment)
-          this.newComment = '';
-        })
-        .catch(error => {
-          console.error(error);
-        });
+        axios.post(`http://localhost:30001/posts/${userId}/comment`, newComment)
+          .then(response => {
+            this.comments.splice(0, 0, newComment)
+            this.newComment = '';
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      });
     },
 
     getUserAvatar(userId) {
@@ -411,12 +419,38 @@ export default {
 /* Comments style */
 
 .comments {
-  padding: 10px 0;
+  padding: 10px;
   border-top: 1px solid #e6ecf0;
+}
+
+#form-comment {
+  margin-bottom: 20px;
+}
+
+#form-comment textarea {
+  width: 100%;
+  height: 60px;
+  border-radius: 4px;
+  padding: 10px;
+  border: 1px solid #ccd6dd;
+  resize: none;
+}
+
+#form-comment button {
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  float: right;
+  margin-top: 10px;
 }
 
 .comment {
   display: flex;
+  flex-direction: column;
   align-items: start;
   padding: 10px 0;
   border-bottom: 1px solid #e6ecf0;
@@ -426,15 +460,20 @@ export default {
   width: 48px;
   height: 48px;
   border-radius: 50%;
+  margin-bottom: 10px;
   margin-right: 10px;
+}
+
+.comment div {
+  display: flex;
+  margin-bottom: 5px;
 }
 
 .comment p:first-of-type {
   font-size: 15px;
   color: #14171a;
   margin-right: 10px;
-  font-weight: bold; 
-  margin-bottom: 5px; 
+  font-weight: bold;
 }
 
 .comment p:nth-of-type(2) {
@@ -442,10 +481,11 @@ export default {
   color: #657786;
 }
 
-.comment p:last-of-type {
+.comment-text {
   font-size: 14px;
   color: #657786;
-  overflow-wrap: break-word; 
+  font-weight: normal !important;
+  overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
 }
