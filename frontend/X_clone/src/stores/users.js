@@ -2,14 +2,18 @@
 
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { onMounted, ref } from 'vue';
 
-export const useUserStore = defineStore('user', {
-  state: () => ({
-    user: null
-  }),
-  actions: {
-    setUser(userData) {
+export const useUserStore = defineStore('user',()=> {
+  
+  const user = ref(null)
+
+
+  
+  function setUser(userData) {
       this.user = userData;
-    },
-  },
+  }
+
+
+  return { user, setUser}
 });

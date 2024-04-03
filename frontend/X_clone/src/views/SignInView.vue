@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/users'; // Assurez-vous que le chemin d'importation est correct
 import { useRouter } from 'vue-router';
@@ -9,9 +9,11 @@ const authlogin = ref('');
 const authpasswd = ref('');
 const errorMessage = ref(''); 
 const router = useRouter(); 
-
-
 const userStore = useUserStore();
+
+
+
+
 
 const login = async () => {
   errorMessage.value = ''; 
@@ -24,9 +26,15 @@ const login = async () => {
         'Content-Type': 'application/json'
       }
     });
-    userStore.setUser(response.data);
-    console.log(userStore.user); // Affiche les données de l'utilisateur
-    router.push({ name: 'home' }); // Remplacez 'NomDeLaRouteDestination' par le nom de la route où vous voulez rediriger l'utilisateur
+       // Supposons que response.data est un tableau et que vous souhaitez le premier objet
+    if (response.data && response.data.length > 0) {
+      const userData = response.data[0];
+      userStore.setUser(userData); // Ici vous définissez les données utilisateur dans le store
+      localStorage.setItem('yuserId', userData.YUSERID); // Assurez-vous que userData contient bien la propriété YUSERID
+      console.log(userData.YUSERID); // Devrait afficher l'ID de l'utilisateur
+      console.log(localStorage.getItem('yuserId')); // Devrait afficher l'ID de l'utilisateur
+      router.push({ name: 'home' }); // Assurez-vous que 'home' est le nom correct de la route
+    }
   } catch (error) {
     if (error.response && error.response.status === 404) {
       errorMessage.value = "Nom d'utilisateur ou mot de passe incorrect.";
@@ -34,6 +42,12 @@ const login = async () => {
     console.error("Erreur lors de la connexion : ", error);
   }
 };
+
+onMounted(() => {
+
+const userId = localStorage.getItem('yuserId');
+console.log(userId)
+});
 </script>
 
 
