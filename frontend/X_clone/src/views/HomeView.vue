@@ -63,6 +63,7 @@
               <img :src="comment.userAvatar" alt="User avatar" class="avatar">
               <p>{{ comment.userInfo.YUSERPSEUDO }}</p>
               <p>@{{ comment.userInfo.YUSERNAME }}</p>
+              <p class="comment-text">{{ formatDate(comment.COMMENTDATE) }}</p>
             </div>
             <p class="comment-text">{{ comment.COMMENTTEXT }}</p>
           </div>
@@ -223,7 +224,7 @@ export default {
       let newComment = {
         YUSERID: this.yuserId,
         POSTID: tweetId,
-        COMMENTDATE: Date.now(),
+        COMMENTDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
         COMMENTTEXT: this.newComment
       }
 
@@ -499,6 +500,7 @@ export default {
 .comment p:nth-of-type(2) {
   font-size: 14px;
   color: #657786;
+  margin-right: 20px;
 }
 
 .comment-text {
