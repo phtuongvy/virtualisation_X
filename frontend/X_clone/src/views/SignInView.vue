@@ -43,11 +43,7 @@ const login = async () => {
   }
 };
 
-onMounted(() => {
 
-const userId = localStorage.getItem('yuserId');
-console.log(userId)
-});
 </script>
 
 

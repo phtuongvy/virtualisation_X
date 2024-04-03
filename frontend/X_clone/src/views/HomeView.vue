@@ -105,15 +105,14 @@ import axios from 'axios';
 export default {
 
   setup() {
-    const userStore = useUserStore();
-    const user = ref(null); 
+    const yuserId = ref(null); 
 
     onMounted(() => {
-      user.value = userStore.user; 
+      yuserId.value = localStorage.getItem('yuserId'); 
     });
 
     return {
-      user 
+      yuserId 
     };
   },
 
@@ -186,11 +185,9 @@ export default {
     postTweet() {
 
       const url = 'http://localhost:30001/posts/';
-      const userStore = useUserStore();
-      const userId = userStore.user.YUSERID;
-      console.log(userId);
+      console.log(this.yuserId);
       let newTweet = {
-        YUSERID: userId,
+        YUSERID: this.yuserId,
         POSTDATE: Date.now(),
         POSTDESCRIPTION: this.newTweet
       }
