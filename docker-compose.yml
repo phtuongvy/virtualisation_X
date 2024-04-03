@@ -43,7 +43,7 @@ services:
       context: ./frontend/X_clone
       dockerfile: Dockerfile
     ports:
-      - "30003:8080"
+      - "30003:80"
     volumes:
       - ./frontend/X_clone:/frontend/X_clone
     depends_on:
