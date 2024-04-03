@@ -380,11 +380,11 @@ insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) value
 
 insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) values (2, 5, 2, '2024-02-15', 'Viens Naraka !! #NarakaBladePoint');
 
-insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) values (3, 9, 4, '2024-01-23', 'Arrête de secher les cours');
+insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) values (3, 9, 3, '2024-01-23', 'Arrête de secher les cours');
 
 insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) values (4, 10, 5, '2024-03-31', 'On a rien compris, parle français fils de p***');
 
-insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) values (5, 8, 1, '2023-11-12', 'Frero on est la hein :,)');
+insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) values (5, 8, 5, '2023-11-12', 'Frero on est la hein :,)');
 
 insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) values (6, 9, 4, '2024-01-24', 'bro fais gaffe il y a un carton sur la voie !!');
 
@@ -414,7 +414,7 @@ insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) value
 
 insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) values (19, 7, 2, '2023-12-03', 'tkt on est habitué');
 
-insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) values (20, 3, 5, '2024-04-05', 'Il sont solide au moins??');
+insert into COMMENT (COMMENTID, POSTID, YUSERID, COMMENTDATE, COMMENTTEXT) values (20, 3, 5, '2024-04-05', 'Ils sont solide au moins??');
 
 insert into MEDIA (MEDIAID, COMMENTID,MEDIACONTENT) values (1, 8,'https://media.routard.com/image/41/1/pt54785.1264411.w430.jpg');
 
