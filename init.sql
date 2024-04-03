@@ -454,7 +454,7 @@ insert into SAVED (YUSERID, POSTID) values (4, 1);
 
 insert into SAVED (YUSERID, POSTID) values (5, 10);
 
-insert into SAVED (YUSERID, POSTID) values (4, 1);
+insert into SAVED (YUSERID, POSTID) values (4, 2);
 
 insert into SAVED (YUSERID, POSTID) values (2, 9);
 
