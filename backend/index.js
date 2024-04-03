@@ -48,10 +48,8 @@ app.get('/', (req, res) => {
 
 app.post('/login', function (req, res) {
  
-
    var connection = mysql.createConnection(connectionOptions);
    var queryStr = 'SELECT * FROM `YUSER` WHERE `YUSERNAME` = ? AND `YUSERPASSWORD` = ?';
-
   
 
    connection.connect();
@@ -82,6 +80,12 @@ app.post('/login', function (req, res) {
 
 app.post('/register', function (req, res) {
    var connection = mysql.createConnection(connectionOptions);
+
+   console.log(req.body)
+
+   req.body.YUSERPREMIUM = 0;
+   req.body.YUSERROLE = 'YUSER';
+
    var queryStr = 'INSERT INTO `YUSER` (`YUSERID`, `YUSERPSEUDO`, `YUSERNAME`, `YUSERBIRTHDAY`, `YUSERPASSWORD`, `YUSERROLE`, `YUSERPREMIUM`) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
    connection.connect();
