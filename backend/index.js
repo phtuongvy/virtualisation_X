@@ -2,6 +2,7 @@
 var mysql = require('mysql');
 const express = require('express');
 
+
 // Initialisation d'Express
 const app = express();
 
@@ -46,14 +47,16 @@ app.get('/', (req, res) => {
 // start page functionnalities
 
 app.post('/login', function (req, res) {
+ 
 
    var connection = mysql.createConnection(connectionOptions);
    var queryStr = 'SELECT * FROM `YUSER` WHERE `YUSERNAME` = ? AND `YUSERPASSWORD` = ?';
 
+  
+
    connection.connect();
 
    connection.query(queryStr, [req.body.YUSERNAME, req.body.YUSERPASSWORD], function (error, results, fields) {
-
       if (error) {
          console.error('Une erreur est survenue lors de la requête à la base de données:', error);
          res.status(500).json({ error: "Une erreur interne est survenue" });
@@ -65,11 +68,15 @@ app.post('/login', function (req, res) {
          return;
       }
 
+      // Peut-être afficher le résultat pour le débogage, mais soyez prudent avec les informations sensibles
+      console.log('Résultat de la requête:', results);
+
       res.status(200).json(results);
    });
-
+  
    connection.end();
 });
+
 
 
 

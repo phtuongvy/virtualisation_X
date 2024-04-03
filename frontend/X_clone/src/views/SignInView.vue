@@ -1,96 +1,123 @@
 <script setup>
-import { ref, computed, reactive } from 'vue'
-import { useUsersStore } from '@/stores/users';
+import { ref } from 'vue';
+import axios from 'axios';
+import { useUserStore } from '@/stores/users'; // Assurez-vous que le chemin d'importation est correct
+import { useRouter } from 'vue-router';
 
-const users = useUsersStore()
 
-const authlogin = ref("")
-const authpasswd = ref("") 
+const authlogin = ref('');
+const authpasswd = ref('');
+const errorMessage = ref(''); 
+const router = useRouter(); 
 
-function login() {
-    users.login({ 
-        login: authlogin.value, 
-        password: authpasswd.value
-   })
-    console.log(authpasswd)
-}
- 
+
+const userStore = useUserStore();
+
+const login = async () => {
+  errorMessage.value = ''; 
+  try {
+    const response = await axios.post('http://localhost:30001/login', {
+      YUSERNAME: authlogin.value,
+      YUSERPASSWORD: authpasswd.value,
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    userStore.setUser(response.data);
+    console.log(userStore.user); // Affiche les données de l'utilisateur
+    router.push({ name: 'home' }); // Remplacez 'NomDeLaRouteDestination' par le nom de la route où vous voulez rediriger l'utilisateur
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      errorMessage.value = "Nom d'utilisateur ou mot de passe incorrect.";
+    } 
+    console.error("Erreur lors de la connexion : ", error);
+  }
+};
 </script>
 
 
 <template>
 
-<div id="auth"> 
-
-       
-<input v-model="authlogin">
-<input v-model="authpasswd">
-
-<button @click="login">Connecter</button>
-
-
-<!-- <div id="logout" v-if="users.user">
-  <button @click="logout">Déconnecter</button>
-</div> -->
-
-
-
-</div>
+  <div class="startPage">
+    <div class="leftColumn">
+      <img src="@/assets/ylogo.png" alt="Y logo">
+      <h1>Ça se passe maintenant!</h1>
+    </div>
+    <div class="rightColumn">
+      <div class="error-message" v-show="errorMessage">{{ errorMessage }}</div>
+      <label for="password">Login :</label>
+      <input v-model="authlogin" type="email" >
+      <label for="password">Mot de passe :</label>
+      <input v-model="authpasswd" type="password" >
+      <button @click="login">Connecter</button>
+    </div>
+  </div>
     
 </template>
 
 
 
 <style scoped>
+  @font-face {
+    font-family: 'ChirpExtendedHeavy';
+    src: url('@/assets/fonts/ChirpExtendedHeavy.ttf') format('truetype');
+  }
 
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f8fa;
-      color: #14171a;
-      display: flex;
-      justify-content: center; /* Centre horizontalement */
-      align-items: center; /* Centre verticalement */
-      height: 100vh; /* S'assure que le body prend toute la hauteur de la fenêtre */
-      margin: 0;
-    }
+  * {
+    font-family: 'ChirpExtendedHeavy', sans-serif;
+    color: black; /* Mettre la couleur de texte en noir */
+  }
 
-    #auth {
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      padding: 20px;
-      width: 300px;
-    }
+  .startPage {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px;
+    height: auto; /* ajustement pour assurer la hauteur auto */
+  }
 
-    #login {
-      display: flex;
-      flex-direction: column;
-    }
+  .leftColumn, .rightColumn {
+    flex: 1;
+  }
 
-    input[v-model="authlogin"],
-    input[v-model="authpasswd"] {
-      border: 1px solid #ccd6dd;
-      border-radius: 4px;
-      padding: 10px;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
+  input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px; /* Bordures plus subtiles */
+    border: 1px solid #ddd; /* Bordure légère */
+    box-sizing: border-box; /* Pour inclure padding dans la largeur */
+  }
 
-    button {
-      background-color: #1da1f2;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      padding: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-    }
+  button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Transition plus douce */
+    border: none;
+    background-color: #1DA1F2;
+    color: white;
+  }
 
-    button:hover {
-      background-color: #1991db;
-    }
+  button:hover {
+    background-color: #117dbb; /* Un bleu plus foncé au survol */
+  }
 
+  .error-message {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    padding: 10px;
+    border-radius: 5px;
+}
 
-
+  img {
+    width: 265px;
+    height: 239px;
+    margin-bottom: 20px;
+  }
 </style>
