@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS X_database CHARACTER SET SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS X_database CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE X_database;
 
