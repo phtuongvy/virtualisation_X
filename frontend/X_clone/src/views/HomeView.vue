@@ -21,7 +21,7 @@
 
       <!-- users tweets part -->
 
-      <div v-for="tweet in tweets" :key="tweet.POSTID" class="tweet" v-if="users.length && media.length">
+      <div v-for="tweet in tweets" :key="tweet.POSTID" class="tweet" v-if="users.length && medias.length">
 
         <!-- tweets' info -->
         <div class="tweet-header">
@@ -52,11 +52,20 @@
 
         <!-- Comments part -->
         <div class="comments">
+
+          <div id="form-comment">
+            <textarea v-model="newComments" placeholder="Poster votre commentaire"></textarea>
+            <button type="submit">Commenter</button>
+          </div>
+
           <div v-for="comment in getComments(tweet)" :key="comment.COMMENTID" class="comment">
             <img :src="comment.userAvatar" alt="User avatar" class="avatar">
-            <p>{{ comment.COMMENTTEXT }}</p>
-            <p>@{{ comment.userInfo.YUSERPSEUDO }}</p>
+            <p>{{ comment.userInfo.YUSERPSEUDO }}</p>
+            <p>@{{ comment.userInfo.YUSERNAME }}</p>
+            <p class="comment-text">{{ comment.COMMENTTEXT }}</p>
           </div>
+
+
         </div>
 
 
@@ -85,6 +94,7 @@
 
 <script>
 import { RouterLink } from 'vue-router';
+import { useUserStore } from '@/stores/users';
 
 
 import axios from 'axios';
@@ -95,11 +105,11 @@ export default {
     return {
       tweets: [],
       users: [],
-      media: [],
+      medias: [],
       liked: [],
       comments: [],
       newTweet: '',
-      newComments: ''
+      newComment: ''
     };
   },
   created() {
@@ -110,12 +120,12 @@ export default {
       axios.get('http://localhost:30001/media'), // get media
       axios.get('http://localhost:30001/liked') // get tweets liked
     ])
-      .then(([postsResponse, usersResponse, mediaResponse, likedResponse, commentsResponse]) => {
+      .then(([postsResponse, usersResponse, commentsResponse, mediaResponse, likedResponse]) => {
         this.tweets = postsResponse.data;
         this.users = usersResponse.data;
-        this.media = mediaResponse.data;
-        this.liked = likedResponse.data;
         this.comments = commentsResponse.data;
+        this.medias = mediaResponse.data;
+        this.liked = likedResponse.data;
       })
       .catch(error => {
         console.error(error);
@@ -159,8 +169,10 @@ export default {
     // post tweet
     postTweet() {
       const url = 'http://localhost:30001/posts/';
+      const userStore = useUserStore();
+      const userId = userStore.user.YUSERID;
       let newTweet = {
-        YUSERID: 2,
+        YUSERID: userId000,
         POSTDATE: Date.now(),
         POSTDESCRIPTION: this.newTweet
       }
@@ -175,8 +187,33 @@ export default {
         });
     },
 
+    // post comment
+    postComment() {
+      const userStore = useUserStore();
+      const userId = userStore.user.YUSERID;
+      const postId = userStore.user.POSTID;
+      console.log(userId, postId);
+
+      let newComment = {
+        YUSERID: userId,
+        POSTID: postId,
+        COMMENTDATE: Date.now(),
+        COMMENTTEXT: this.newComment
+      }
+
+      axios.post('http://localhost:30001/posts/${userId}/comment', newComment)
+        .then(response => {
+          this.comments.splice(0, 0, newComment)
+          this.newComment = '';
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
     getUserAvatar(userId) {
-      const userMedia = this.media.find(media => media.YUSERID === userId);
+      // console.log(userId);
+      const userMedia = this.medias.find(media => media.YUSERID === userId);
       return userMedia ? userMedia.MEDIACONTENT : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg';
     },
     getUserInfo(userId) {
@@ -381,29 +418,36 @@ export default {
 .comment {
   display: flex;
   align-items: start;
-  margin-bottom: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e6ecf0;
 }
 
-.comment p {
-  margin: 0;
-}
-
-.comment p:first-child {
-  font-size: 15px;
-  color: #14171a;
+.comment .avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
   margin-right: 10px;
 }
 
-.comment p:last-child {
+.comment p:first-of-type {
+  font-size: 15px;
+  color: #14171a;
+  margin-right: 10px;
+  font-weight: bold; 
+  margin-bottom: 5px; 
+}
+
+.comment p:nth-of-type(2) {
   font-size: 14px;
   color: #657786;
 }
 
-.comment .avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 10px;
+.comment p:last-of-type {
+  font-size: 14px;
+  color: #657786;
+  overflow-wrap: break-word; 
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 /* like, save buton style */

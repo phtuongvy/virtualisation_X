@@ -163,6 +163,25 @@ app.post('/posts/:yuserid/save', function (req, res) {
    connection.end();
 });
 
+app.post('/posts/:yuserid/comment', function (req, res) {
+   var connection = mysql.createConnection(connectionOptions);
+   var queryStr = 'INSERT INTO `COMMENT` (`COMMENTID`, `POSTID`, `YUSERID`, `COMMENTDATE`, `COMMENTTEXT`) VALUES (?, ?, ?, ?, ?)';
+
+   connection.connect();
+
+   connection.query(queryStr, [null, req.body.POSTID, req.body.YUSERID, req.body.COMMENTDATE, req.body.COMMENTTEXT], function (error, results, fields) {
+      if (error) {
+         console.error('Une erreur est survenue lors de la requête à la base de données:', error);
+         res.status(500).json({ error: "Une erreur interne est survenue" });
+         return;
+      }
+
+      res.status(200).json({ message: "Commentaire enregistré avec succès" });
+   });
+
+   connection.end();
+});
+
 
 
 app.get('/comment', function (req, res) {
