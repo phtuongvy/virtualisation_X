@@ -1,4 +1,5 @@
 <script>
+import { useUserStore } from '@/stores/users'; 
 
 import axios from 'axios';
 
@@ -29,17 +30,13 @@ export default {
 
                 // Handle successful sign-up
                 console.log(response.data);
-                this.$router.push('/home');
+                this.$router.push('/login');
             } catch (error) {
                 // Handle sign-up error
                 console.error(error);
                 this.errorMessage = 'Erreur lors de la création du compte. Veuillez réessayer.';
             }
         },
-        closeCard() {
-            this.showCard = false;
-
-        }
     }
 };
 </script>
@@ -60,6 +57,10 @@ export default {
             <div class="form-group">
                 <label for="username">Nom d'utilisateur :</label>
                 <input type="text" id="username" v-model="username" required>
+            </div>
+            <div class="form-group">
+                <label for="username">Date d'anniversaire :</label>
+                <input type="date" id="birthaday" v-model="userBirthday" required>
             </div>
             <div class="form-group">
                 <label for="password">Mot de passe :</label>
