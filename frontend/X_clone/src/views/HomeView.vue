@@ -55,7 +55,7 @@
 
           <div id="form-comment">
             <textarea v-model="newComment" placeholder="Poster votre commentaire"></textarea>
-            <button type="submit" @click="postComment">Commenter</button>
+            <button type="submit" @click="postComment(tweet)">Commenter</button>
           </div>
 
           <div v-for="comment in getComments(tweet)" :key="comment.COMMENTID" class="comment">
@@ -105,14 +105,14 @@ import axios from 'axios';
 export default {
 
   setup() {
-    const yuserId = ref(null); 
+    const yuserId = ref(null);
 
     onMounted(() => {
-      yuserId.value = localStorage.getItem('yuserId'); 
+      yuserId.value = localStorage.getItem('yuserId');
     });
 
     return {
-      yuserId 
+      yuserId
     };
   },
 
@@ -123,6 +123,7 @@ export default {
       medias: [],
       liked: [],
       comments: [],
+      currentTweet: null,
       newTweet: '',
       newComment: ''
     };
@@ -185,7 +186,6 @@ export default {
     postTweet() {
 
       const url = 'http://localhost:30001/posts/';
-      console.log(this.yuserId);
       let newTweet = {
         YUSERID: this.yuserId,
         POSTDATE: Date.now(),
@@ -196,36 +196,45 @@ export default {
         .then(response => {
           this.tweets.splice(0, 0, newTweet)
           this.newTweet = '';
+          location.reload();
         })
         .catch(error => {
           console.error(error);
         });
-      
+
+    },
+
+    selectPost(tweet) {
+      this.currentTweet = tweet;
     },
 
     // post comment
-    postComment() {
-      const userStore = useUserStore();
-      const userId = userStore.user.YUSERID;
-      const postId = userStore.user.POSTID;
-      console.log(userId, postId);
-
-      let newComment = {
-        YUSERID: userId,
-        POSTID: postId,
-        COMMENTDATE: Date.now(),
-        COMMENTTEXT: this.newComment
+    postComment(tweet) {
+      if (!tweet) {
+        console.error('Aucun tweet a été sélectionné pour commenter.');
+        return;
       }
 
-      axios.post(`http://localhost:30001/posts/${userId}/comment`, newComment)
+      const tweetId = tweet.POSTID;
+      console.log(this.yuserId, tweetId);
+
+      let newComment = {
+        YUSERID: this.yuserId,
+        POSTID: tweetId,
+        POSTDATE: Date.now(),
+        POSTDESCRIPTION: this.newTweet
+      }
+
+      axios.post(`http://localhost:30001/posts/${this.yuserId}/comment`, newComment)
         .then(response => {
           this.comments.splice(0, 0, newComment)
           this.newComment = '';
+          location.reload();
         })
         .catch(error => {
           console.error(error);
         });
-      
+
     },
 
     getUserAvatar(userId) {
