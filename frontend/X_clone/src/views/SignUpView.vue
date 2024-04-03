@@ -30,17 +30,13 @@ export default {
 
                 // Handle successful sign-up
                 console.log(response.data);
-                this.$router.push('/home');
+                this.$router.push('/login');
             } catch (error) {
                 // Handle sign-up error
                 console.error(error);
                 this.errorMessage = 'Erreur lors de la création du compte. Veuillez réessayer.';
             }
         },
-        closeCard() {
-            this.showCard = false;
-
-        }
     }
 };
 </script>
