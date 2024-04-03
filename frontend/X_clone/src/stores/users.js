@@ -5,7 +5,7 @@ import axios from 'axios';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    user: null,
+    user: null
   }),
   actions: {
     setUser(userData) {

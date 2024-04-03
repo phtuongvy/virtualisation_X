@@ -94,14 +94,29 @@
 </template>
 
 <script>
+import { ref, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
-import { useUserStore } from '@/stores/users';
+import { useUserStore } from '@/stores/users.js';
 
 
 import axios from 'axios';
 
 
 export default {
+
+  setup() {
+    const userStore = useUserStore();
+    const user = ref(null); 
+
+    onMounted(() => {
+      user.value = userStore.user; 
+    });
+
+    return {
+      user 
+    };
+  },
+
   data() {
     return {
       tweets: [],
@@ -170,53 +185,50 @@ export default {
     // post tweet
     postTweet() {
 
-      this.$nextTick(() => {
-        const url = 'http://localhost:30001/posts/';
-        const userStore = useUserStore();
-        const userId = userStore.user.YUSERID;
-        console.log(userId);
-        let newTweet = {
-          YUSERID: userId,
-          POSTDATE: Date.now(),
-          POSTDESCRIPTION: this.newTweet
-        }
-  
-        axios.post(url, newTweet)
-          .then(response => {
-            this.tweets.splice(0, 0, newTweet)
-            this.newTweet = '';
-          })
-          .catch(error => {
-            console.error(error);
-          });
+      const url = 'http://localhost:30001/posts/';
+      const userStore = useUserStore();
+      const userId = userStore.user.YUSERID;
+      console.log(userId);
+      let newTweet = {
+        YUSERID: userId,
+        POSTDATE: Date.now(),
+        POSTDESCRIPTION: this.newTweet
+      }
 
-      });
+      axios.post(url, newTweet)
+        .then(response => {
+          this.tweets.splice(0, 0, newTweet)
+          this.newTweet = '';
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      
     },
 
     // post comment
     postComment() {
-      this.$nextTick(() => {
-        const userStore = useUserStore();
-        const userId = userStore.user.YUSERID;
-        const postId = userStore.user.POSTID;
-        console.log(userId, postId);
+      const userStore = useUserStore();
+      const userId = userStore.user.YUSERID;
+      const postId = userStore.user.POSTID;
+      console.log(userId, postId);
 
-        let newComment = {
-          YUSERID: userId,
-          POSTID: postId,
-          COMMENTDATE: Date.now(),
-          COMMENTTEXT: this.newComment
-        }
+      let newComment = {
+        YUSERID: userId,
+        POSTID: postId,
+        COMMENTDATE: Date.now(),
+        COMMENTTEXT: this.newComment
+      }
 
-        axios.post(`http://localhost:30001/posts/${userId}/comment`, newComment)
-          .then(response => {
-            this.comments.splice(0, 0, newComment)
-            this.newComment = '';
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      });
+      axios.post(`http://localhost:30001/posts/${userId}/comment`, newComment)
+        .then(response => {
+          this.comments.splice(0, 0, newComment)
+          this.newComment = '';
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      
     },
 
     getUserAvatar(userId) {
