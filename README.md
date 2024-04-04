@@ -4,13 +4,13 @@
 - Ricardo NUNES EMILIO : Back-end
 - Tuong Vy PHAM HUYNH : Front-end
 
+# Indications pour cloner le projet github
+
+- git clone https://github.com/phtuongvy/virtualisation_X.git
+
 # Indications pour le lancement du projet
 
-1. docker pull .../clone_x
-
-2. docker compose build
-
-3. docker compose up -d
+- docker compose build
 
 # Informations sur notre projet virtualisation clone Twitter
 
