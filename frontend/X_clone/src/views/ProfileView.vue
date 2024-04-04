@@ -16,7 +16,7 @@
     <div class="main-content">
       <!-- Contenu du profil ici -->
       <div class="profile-details">
-        <h1>Nom d'utilisateur</h1>
+        <h1>Votre pseudo : {{ yuserInfo.YUSERPSEUDO }}</h1>
         <!-- Ajoutez plus de détails ici -->
         <p>Bio de l'utilisateur...</p>
         <!-- Vous pouvez ajouter des listes de tweets, des abonnements, des abonnés, etc. ici. -->
