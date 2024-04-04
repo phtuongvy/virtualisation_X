@@ -65,6 +65,7 @@ app.get('/users/:id', YuserController.getuserById); // Récupération de la list
 // Routes pour la gestion des posts
 app.post('/posts', PostController.posts); // Création d'un nouveau post
 app.get('/posts', PostController.getPost); // Récupération des posts
+app.get('/posts/:userId/saved', PostController.getSavedPosts); // Récupération d'un post par son ID
 
 // Routes pour la gestion des likes
 app.post('/posts/:postid/like', LikedController.postsLiked); // Ajout d'un like à un post

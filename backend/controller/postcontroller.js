@@ -58,6 +58,31 @@ function getPost(req, res) {
    connection.end();
 }
 
+// Fonction pour récupérer les post sauvegardés de la base de données
+function getSavedPosts(req, res) {
+   var connection = mysql.createConnection(connectionOptions);
+   var queryStr = 'SELECT * FROM `POST` WHERE `POSTID` IN (SELECT `POSTID` FROM `SAVED` WHERE `YUSERID` = ?) ORDER BY `POSTID` DESC';
+
+   connection.connect();
+
+   connection.query(queryStr, [req.params.userId], function (error, results, fields) {
+       if (error) {
+           console.error('Une erreur est survenue lors de la requête à la base de données:', error);
+           res.status(500).json({ error: "Une erreur interne est survenue" });
+           return;
+       }
+
+       if (results.length == 0) {
+           res.status(404).json({ message: "Aucun post sauvegardé trouvé" });
+           return;
+       }
+
+       res.status(200).json(results);
+   });
+
+   connection.end();
+}
+
 
 // Exporte les fonctions pour qu'elles puissent être utilisées dans d'autres fichiers du projet
-module.exports = { posts,getPost };
+module.exports = { posts,getPost, getSavedPosts };

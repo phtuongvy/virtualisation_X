@@ -5,7 +5,7 @@
       <RouterLink to="/home">Accueil</RouterLink>
       <RouterLink to="/explore">Explorer</RouterLink>
       <RouterLink to="/notifications">Notifications</RouterLink>
-      <RouterLink to="/messages">Messages</RouterLink>
+      <RouterLink to="/bookmarks">Bookmarks</RouterLink>
       <RouterLink to="/profile" class="profile-link">
         <img src="https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg"
           alt="Profile" class="profile-image">
@@ -18,13 +18,13 @@
 
       <!-- post tweets part -->
       <form @submit.prevent="postTweet" class="tweet-form">
-        <textarea v-model="newTweet" placeholder="Quoi de neuf ?"></textarea>
+        <textarea v-model="state.newTweet" placeholder="Quoi de neuf ?"></textarea>
         <button type="submit">Tweet</button>
       </form>
 
       <!-- users tweets part -->
 
-      <div v-for="tweet in tweets" :key="tweet.POSTID" class="tweet" v-if="users.length && medias.length">
+      <div v-for="tweet in state.tweets" :key="tweet.POSTID" class="tweet" v-if="state.users.length && state.medias.length">
 
         <!-- tweets' info -->
         <div class="tweet-header">
@@ -57,7 +57,7 @@
         <div class="comments">
 
           <div id="form-comment">
-            <textarea v-model="newComment" placeholder="Poster votre commentaire"></textarea>
+            <textarea v-model="state.newComment" placeholder="Poster votre commentaire"></textarea>
             <button type="submit" @click="postComment(tweet)">Commenter</button>
           </div>
 
@@ -83,9 +83,9 @@
 
       <!-- search bar -->
       <div class="search-container">
-        <input type="text" v-model="searchQuery" placeholder="Rechercher" class="search-input" />
+        <input type="text" v-model="state.searchQuery" placeholder="Rechercher" class="search-input" />
 
-        <div v-if="searchQuery" class="search-results">
+        <div v-if="state.searchQuery" class="search-results">
           <div class="search-section">
             <div v-for="tweet in filteredTweets" :key="tweet.POSTID" class="search-result">
               <div class="tweet-user">{{ getUserInfo(tweet.YUSERID).YUSERNAME }}</div>
@@ -124,7 +124,7 @@
 <script>
 
 // Importing dependencies
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import { RouterLink } from 'vue-router';
 
 
@@ -137,18 +137,7 @@ export default {
   // Initialize setup
   setup() {
     const yuserId = ref(null);
-
-    onMounted(() => {
-      yuserId.value = localStorage.getItem('yuserId');
-    });
-
-    return {
-      yuserId
-    };
-  },
-  // Initialize data variables
-  data() {
-    return {
+    const state = reactive({
       tweets: [],
       users: [],
       medias: [],
@@ -158,46 +147,72 @@ export default {
       newTweet: '',
       newComment: '',
       searchQuery: ''
+    });
+
+    // Fetch data from server side
+    onMounted(() => {
+      yuserId.value = localStorage.getItem('yuserId');
+      Promise.all([
+        axios.get('http://localhost:30001/posts'), // get posts
+        axios.get('http://localhost:30001/users'), // get users
+        axios.get('http://localhost:30001/comment'), // get comments
+        axios.get('http://localhost:30001/media'), // get media
+        axios.get('http://localhost:30001/liked') // get tweets liked
+      ])
+        .then(([postsResponse, usersResponse, commentsResponse, mediaResponse, likedResponse]) => {
+          state.tweets = postsResponse.data;
+          state.users = usersResponse.data;
+          state.comments = commentsResponse.data;
+          state.medias = mediaResponse.data;
+          state.liked = likedResponse.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    });
+
+    // Save tweet for current user
+    const save = (tweet) => {
+      console.log(yuserId.value, tweet.POSTID);
+      axios.post(`http://localhost:30001/posts/${yuserId.value}/save`, { YUSERID: yuserId.value, POSTID: tweet.POSTID })
+        .then(response => {
+          // Update the tweet's save status in the local state
+          const savedTweet = state.tweets.find(t => t.POSTID === tweet.POSTID);
+          if (savedTweet) {
+            savedTweet.save = response.data.save;
+          }
+          location.reload();
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+
+    return {
+      state,
+      yuserId,
+      save
     };
   },
-  // Fetch data from server side
-  created() {
-    Promise.all([
-      axios.get('http://localhost:30001/posts'), // get posts
-      axios.get('http://localhost:30001/users'), // get users
-      axios.get('http://localhost:30001/comment'), // get comments
-      axios.get('http://localhost:30001/media'), // get media
-      axios.get('http://localhost:30001/liked') // get tweets liked
-    ])
-      .then(([postsResponse, usersResponse, commentsResponse, mediaResponse, likedResponse]) => {
-        this.tweets = postsResponse.data;
-        this.users = usersResponse.data;
-        this.comments = commentsResponse.data;
-        this.medias = mediaResponse.data;
-        this.liked = likedResponse.data;
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  },
+
   // Computed properties (things that will changes instantly)
   computed: {
     filteredTweets() {
-      if (!this.searchQuery) {
+      if (!this.state.searchQuery) {
         return [];
       }
 
-      return this.tweets.filter(tweet =>
-        tweet.POSTDESCRIPTION.toLowerCase().includes(this.searchQuery.toLowerCase())
+      return this.state.tweets.filter(tweet =>
+        tweet.POSTDESCRIPTION.toLowerCase().includes(this.state.searchQuery.toLowerCase())
       );
     },
     filteredUsers() {
-      if (!this.searchQuery) {
+      if (!this.state.searchQuery) {
         return [];
       }
 
-      return this.users.filter(user =>
-        user.YUSERNAME.toLowerCase().includes(this.searchQuery.toLowerCase())
+      return this.state.users.filter(user =>
+        user.YUSERNAME.toLowerCase().includes(this.state.searchQuery.toLowerCase())
       );
     },
   },
@@ -212,25 +227,9 @@ export default {
       axios.post(`http://localhost:30001/posts/${tweet.POSTID}/like`, { POSTID: tweet.POSTID, YUSERID: userid })
         .then(response => {
           // Find the corresponding 'like' record and increment the 'likes' count
-          const likeRecord = this.liked.find(like => like.POSTID === tweet.POSTID && like.YUSERID === userid);
+          const likeRecord = this.state.liked.find(like => like.POSTID === tweet.POSTID && like.YUSERID === userid);
           if (likeRecord) {
             likeRecord.likes += 1;
-          }
-          location.reload();
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    },
-
-    // Save tweet
-    save(tweet) {
-      axios.post(`http://localhost:30001/posts/${tweet.YUSERID}/save`, { YUSERID: tweet.YUSERID, POSTID: tweet.POSTID })
-        .then(response => {
-          // Update the tweet's save status in the local state
-          const savedTweet = this.tweets.find(t => t.POSTID === tweet.POSTID);
-          if (savedTweet) {
-            savedTweet.save = response.data.save;
           }
           location.reload();
         })
@@ -246,12 +245,12 @@ export default {
       let newTweet = {
         YUSERID: this.yuserId,
         POSTDATE: Date.now(),
-        POSTDESCRIPTION: this.newTweet
+        POSTDESCRIPTION: this.state.newTweet
       }
 
       axios.post(url, newTweet)
         .then(response => {
-          this.tweets.splice(0, 0, newTweet)
+          this.state.tweets.splice(0, 0, newTweet)
           this.newTweet = '';
           location.reload();
         })
@@ -279,12 +278,12 @@ export default {
         YUSERID: this.yuserId,
         POSTID: tweetId,
         COMMENTDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
-        COMMENTTEXT: this.newComment
+        COMMENTTEXT: this.state.newComment
       }
 
       axios.post(`http://localhost:30001/posts/${this.yuserId}/comment`, newComment)
         .then(response => {
-          this.comments.splice(0, 0, newComment)
+          this.state.comments.splice(0, 0, newComment)
           this.newComment = '';
           location.reload();
         })
@@ -296,7 +295,7 @@ export default {
     // Get user avatar
     getUserAvatar(userId) {
       // console.log(userId);
-      const userMedia = this.medias.find(media => media.YUSERID === userId);
+      const userMedia = this.state.medias.find(media => media.YUSERID === userId);
       return userMedia ? userMedia.MEDIACONTENT : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg';
     },
     // Get current user avatar
@@ -305,15 +304,15 @@ export default {
     },
     // Get user info
     getUserInfo(userId) {
-      return this.users.find(user => user.YUSERID === userId) || {};
+      return this.state.users.find(user => user.YUSERID === userId) || {};
     },
     // Get likes for a tweet
     getLikes(tweet) {
-      return this.liked.filter(like => like.POSTID === tweet.POSTID).length;
+      return this.state.liked.filter(like => like.POSTID === tweet.POSTID).length;
     },
     // Get comments for a tweet
     getComments(tweet) {
-      return this.comments
+      return this.state.comments
         .filter(comment => comment.POSTID === tweet.POSTID)
         .map(comment => {
           const userInfo = this.getUserInfo(comment.YUSERID);

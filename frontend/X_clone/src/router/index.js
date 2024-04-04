@@ -4,6 +4,7 @@ import SignInView from '../views/SignInView.vue'
 import SignUpView from '../views/SignUpView.vue'
 import StartView from '../views/StartView.vue'
 import ProfileView from '../views/ProfileView.vue'
+import BookmarksView from '../views/BookmarksView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,6 +13,11 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/bookmarks',
+      name: 'bookmarks',
+      component: BookmarksView
     },
     {
       path: '/login',
