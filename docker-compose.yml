@@ -53,9 +53,9 @@ services:
   nginx:
     image: nginx:alpine
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/X_clone/nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - 80:80
+      - "30004:80"
     depends_on:
       - frontend
     container_name: moe-nginx-app
