@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
-import { useUserStore } from '@/stores/users'; // Assurez-vous que le chemin d'importation est correct
+import { useUserStore } from '@/stores/users.js'; // Assurez-vous que le chemin d'importation est correct
 import { useRouter } from 'vue-router';
 
 

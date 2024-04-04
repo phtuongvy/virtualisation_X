@@ -86,5 +86,31 @@ function getyuser(req, res) {
  
     connection.end();
 }
+
+function getuserById(req, res) {
+   var connection = mysql.createConnection(connectionOptions);
+   var queryStr = 'SELECT * FROM `YUSER` WHERE YUSERID = ?';
+
+   connection.connect();   
+   connection.query(queryStr, [req.params.id], function (error, results, fields) {
+   
+      if (error) {
+         console.error('Une erreur est survenue lors de la requête à la base de données:', error);
+         res.status(500).json({ error: "Une erreur interne est survenue" });
+         return;
+      }    
+      if (results.length == 0) {
+         res.status(404).json({ message: "Attention probléme de ID" });
+         return;
+      }    
+      // Peut-être afficher le résultat pour le débogage, mais soyez prudent avec les informations sensibles
+      console.log('Résultat de la requête:', results); 
+      res.status(200).json(results);
+   });
+   
+   connection.end();
+}
+
+
 // Exporte les fonctions pour qu'elles puissent être utilisées dans d'autres fichiers du projet
-module.exports = { login, register,getyuser };
+module.exports = { login, register,getyuser,getuserById };

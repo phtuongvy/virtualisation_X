@@ -126,7 +126,7 @@
 // Importing dependencies
 import { ref, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
-import { useUserStore } from '@/stores/users.js';
+
 
 
 import axios from 'axios';
