@@ -1,8 +1,8 @@
 <template>
   <div class="home-view">
     <div class="sidebar">
-      <!-- Add your navigation links here -->
-      <RouterLink to="/home">Acceuil</RouterLink>
+      <!-- navigations -->
+      <RouterLink to="/home">Accueil</RouterLink>
       <RouterLink to="/explore">Explorer</RouterLink>
       <RouterLink to="/notifications">Notifications</RouterLink>
       <RouterLink to="/messages">Messages</RouterLink>
@@ -13,7 +13,10 @@
       </RouterLink>
     </div>
 
+    <!-- main content -->
     <div class="main-content">
+
+      <!-- post tweets part -->
       <form @submit.prevent="postTweet" class="tweet-form">
         <textarea v-model="newTweet" placeholder="Quoi de neuf ?"></textarea>
         <button type="submit">Tweet</button>
@@ -74,27 +77,53 @@
       </div>
     </div>
 
+    <!-- Trendings & who to follow -->
+
     <div class="right-sidebar">
-      <!-- Add your trending topics and suggestions here -->
+
+      <!-- search bar -->
+      <div class="search-container">
+        <input type="text" v-model="searchQuery" placeholder="Rechercher" class="search-input" />
+
+        <div v-if="searchQuery" class="search-results">
+          <div class="search-section">
+            <div v-for="tweet in filteredTweets" :key="tweet.POSTID" class="search-result">
+              <div class="tweet-user">{{ getUserInfo(tweet.YUSERID).YUSERNAME }}</div>
+              <div class="tweet-description">{{ tweet.POSTDESCRIPTION }}</div>
+            </div>
+          </div>
+
+          <div class="search-section">
+            <div v-for="user in filteredUsers" :key="user.YUSERID" class="search-result">
+              <div class="user-name">@{{ user.YUSERNAME }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trendings -->
       <h3>Tendances</h3>
       <ul>
         <li>#VueJS</li>
         <li>#JavaScript</li>
         <li>#WebDevelopment</li>
-        <!-- Add more trending topics -->
       </ul>
+
+      <!-- Who to follow -->
       <h3>À qui vous follow ?</h3>
       <ul>
         <li>User 1</li>
         <li>User 2</li>
         <li>User 3</li>
-        <!-- Add more users to follow -->
+
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+
+// Importing dependencies
 import { ref, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 
@@ -105,6 +134,7 @@ import axios from 'axios';
 
 export default {
 
+  // Initialize setup
   setup() {
     const yuserId = ref(null);
 
@@ -116,7 +146,7 @@ export default {
       yuserId
     };
   },
-
+  // Initialize data variables
   data() {
     return {
       tweets: [],
@@ -126,9 +156,11 @@ export default {
       comments: [],
       currentTweet: null,
       newTweet: '',
-      newComment: ''
+      newComment: '',
+      searchQuery: ''
     };
   },
+  // Fetch data from server side
   created() {
     Promise.all([
       axios.get('http://localhost:30001/posts'), // get posts
@@ -148,6 +180,28 @@ export default {
         console.error(error);
       });
   },
+  // Computed properties (things that will changes instantly)
+  computed: {
+    filteredTweets() {
+      if (!this.searchQuery) {
+        return [];
+      }
+
+      return this.tweets.filter(tweet =>
+        tweet.POSTDESCRIPTION.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
+    filteredUsers() {
+      if (!this.searchQuery) {
+        return [];
+      }
+
+      return this.users.filter(user =>
+        user.YUSERNAME.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
+  },
+  // Methods
   methods: {
 
     // Like tweet
@@ -239,18 +293,25 @@ export default {
         });
 
     },
-
+    // Get user avatar
     getUserAvatar(userId) {
       // console.log(userId);
       const userMedia = this.medias.find(media => media.YUSERID === userId);
       return userMedia ? userMedia.MEDIACONTENT : 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg';
     },
+    // Get current user avatar
+    getCurrentUserAvatar() {
+      return this.getUserAvatar(this.yuserId);
+    },
+    // Get user info
     getUserInfo(userId) {
       return this.users.find(user => user.YUSERID === userId) || {};
     },
+    // Get likes for a tweet
     getLikes(tweet) {
       return this.liked.filter(like => like.POSTID === tweet.POSTID).length;
     },
+    // Get comments for a tweet
     getComments(tweet) {
       return this.comments
         .filter(comment => comment.POSTID === tweet.POSTID)
@@ -336,6 +397,64 @@ export default {
 .main-content {
   width: 50%;
   padding: 0 20px;
+}
+
+/* search style */
+
+.search-container {
+  position: relative;
+  margin: 20px 0;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 30px;
+  border: 1px solid #657786;
+  border-radius: 50px;
+  background-color: #f5f8fa;
+  color: #657786;
+  font-size: 15px;
+  outline: none;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: #1DA1F2;
+}
+
+.search-input::placeholder {
+  color: #657786;
+}
+
+.search-results {
+  position: absolute;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #657786;
+  border-radius: 5px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.search-result {
+  padding: 10px;
+  border-bottom: 1px solid #f5f8fa;
+}
+
+.search-result:last-child {
+  border-bottom: none;
+}
+
+.tweet-user {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.tweet-description {
+  color: #657786;
 }
 
 /* tweets style */
