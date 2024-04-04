@@ -60,7 +60,7 @@ app.get('/', (req, res) => {
 app.post('/login', YuserController.login); // Authentification d'un utilisateur
 app.post('/register', YuserController.register); // Enregistrement d'un nouvel utilisateur
 app.get('/users', YuserController.getyuser); // Récupération de la liste des utilisateurs
-app.get('/users/:id', YuserController.getyuser); // Récupération de la liste des utilisateurs
+app.get('/users/:id', YuserController.getuserById); // Récupération de la liste des utilisateurs
 
 // Routes pour la gestion des posts
 app.post('/posts', PostController.posts); // Création d'un nouveau post
