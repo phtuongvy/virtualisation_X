@@ -11,10 +11,6 @@ import Start from './components/Start.vue';
   
     <Start/>
 
-    <RouterLink to="/home">Home</RouterLink>
-
-
-
   <RouterView />
 </template>
 
