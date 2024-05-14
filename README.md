@@ -13,13 +13,11 @@
 - `docker compose up -d --build`
 
 ## Informations sur notre projet virtualisation clone Twitter
-```
-- localhost:30001 -> url pour accéder à notre serveur backend (node.js)
+> - localhost:30001 -> url pour accéder à notre serveur backend (node.js)
 
-- localhost:30002 -> url pour accéder à notre serveur base de données (MySQL)
+> - localhost:30002 -> url pour accéder à notre serveur base de données (MySQL)
 
-- localhost:30003 -> url pour accéder à notre client frontend (framework Vue.js)
-```
+> - localhost:30003 -> url pour accéder à notre client frontend (framework Vue.js)
 
 
 
